@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	INCOUNT = 5
+	INCOUNT = 10
 	AGE     = 0
 	OSC     = 1
 	NSBD    = 2
@@ -19,7 +19,7 @@ const (
 )
 
 const (
-	OUTCOUNT = 2
+	OUTCOUNT = 10
 	OMF      = 0
 	MLR      = 1
 )
@@ -56,13 +56,16 @@ func (g *Gene) Build() {
 }
 
 type Neuron struct {
+	ID int     // ID
 	W  float64 // W weight
 	I  float64 // I input
 	O  float64 // O output
 	PO float64 // PO previous output
+	C  []int   // C connections from other neurons
 }
 
 func (n *Neuron) Output() {
+
 	ti := n.I + n.PO
 	n.O = math.Tanh(n.W * ti)
 	n.PO = n.O
@@ -77,9 +80,22 @@ type TinyBlip struct {
 	Direction  int      // Direction 0 - 8
 }
 
+func (tb *TinyBlip) Step() {
+	var ii float64
+	for i, tn := range tb.N {
+		ii = 0
+		for ti := range tn.C {
+			ii += tb.N[ti].O
+		}
+		tb.N[i].I = ii
+	}
+
+}
+
 var GeneCount int
 var HiddenCount int
 var BlipCount int
+var Blips []TinyBlip
 
 func main() {
 	fmt.Println("Start")
@@ -87,8 +103,6 @@ func main() {
 	GeneCount = 2
 	HiddenCount = 1
 	BlipCount = 3
-
-	var Blips []TinyBlip
 
 	Blips = make([]TinyBlip, BlipCount)
 
