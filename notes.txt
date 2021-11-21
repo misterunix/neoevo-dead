@@ -1,0 +1,41 @@
+b31 0=input neuron, 1=hidden neuron
+b24-30 input neuron 7bits
+b23 sink type 0=output neuron, 1=hidden neuron
+b16-22 sink neuron id 7bits
+b0-15 signed 16b int 
+
+input/sink id mode neuron count
+
+
+pheromone gradient left right
+pheromone gradient forward
+pheromone density
+age AGE
+random input
+blockage left-right
+oscillator OSC
+blockage forward BLOCKF
+population gradient left-right
+population density
+population gradient forward
+population long-range forward
+last movement y
+blockage long-range forward
+last movement x
+north/south border distance NSBD
+genetic similarity of fwd neighbor
+east/west border distance EWBD
+east/west world location
+nearest border distance
+north/south world location
+
+set long-probe distance
+kill forward neighbor
+set osc period
+emit pheromone
+set responsiveness
+move fordward
+move randommove reverse
+move left/right (+/-)
+move east/west (+/-)
+move north/south (+/-)
