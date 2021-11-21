@@ -32,7 +32,7 @@ type Gene struct {
 	SinkID   int     // SinkID
 	WeightI  int     // WeightI
 	Weight   float64 // Weight
-	N        Neuron  // N
+
 }
 
 func (g *Gene) Build() {
@@ -73,7 +73,8 @@ type TinyBlip struct {
 	GeneEncode []Gene
 	In         [INCOUNT]float64
 	Out        [OUTCOUNT]float64
-	Direction  int // Direction 0 - 8
+	N          []Neuron // N
+	Direction  int      // Direction 0 - 8
 }
 
 var GeneCount int
@@ -93,17 +94,34 @@ func main() {
 
 	for index := 0; index < BlipCount; index++ {
 		Blips[index].ID = index
-		g := Gene{}
-		g.V = int(cryptoRandSecure(int64(0xFFFFFFFF)))
-		g.Build()
-		Blips[index].GeneEncode = append(Blips[index].GeneEncode, g)
+		Blips[index].GeneEncode = make([]Gene, GeneCount)
+		/*
+			g := Gene{}
+			g.V = int(cryptoRandSecure(int64(0xFFFFFFFF)))
+			g.Build()
+		*/
+
+		Blips[index].N = make([]Neuron, INCOUNT+HiddenCount)
+		//Blips[index].GeneEncode = append(Blips[index].GeneEncode, g)
 	}
 
-	g := Gene{}
-	g.V = int(cryptoRandSecure(int64(0xFFFFFFFF)))
-	g.Build()
+	for index := 0; index < BlipCount; index++ {
+		for j := 0; j < GeneCount; j++ {
+			g := Gene{}
+			g.V = int(cryptoRandSecure(int64(0xFFFFFFFF)))
+			g.Build()
+			Blips[index].GeneEncode[j] = g
 
-	fmt.Printf("%+v\n", g)
+		}
+	}
+
+	for index := 0; index < BlipCount; index++ {
+		fmt.Printf("%d ", index)
+		for j := 0; j < GeneCount; j++ {
+			fmt.Printf("%08X ", Blips[index].GeneEncode[j].V)
+		}
+		fmt.Println()
+	}
 
 	/*
 		count := 4
