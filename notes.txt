@@ -34,8 +34,8 @@ kill forward neighbor
 set osc period
 emit pheromone
 set responsiveness
-move fordward
+move fordward OMF
 move randommove reverse
-move left/right (+/-)
+move left/right (+/-) MLR
 move east/west (+/-)
 move north/south (+/-)

@@ -18,6 +18,12 @@ const (
 	BLOCKF  = 4
 )
 
+const (
+	OUTCOUNT = 2
+	OMF      = 0
+	MLR      = 1
+)
+
 type Gene struct {
 	V        int
 	Source   bool    // Source
@@ -26,6 +32,7 @@ type Gene struct {
 	SinkID   int     // SinkID
 	WeightI  int     // WeightI
 	Weight   float64 // Weight
+	N        Neuron  // N
 }
 
 func (g *Gene) Build() {
@@ -65,11 +72,32 @@ type TinyBlip struct {
 	ID         int
 	GeneEncode []Gene
 	In         [INCOUNT]float64
+	Out        [OUTCOUNT]float64
 	Direction  int // Direction 0 - 8
 }
 
+var GeneCount int
+var HiddenCount int
+var BlipCount int
+
 func main() {
 	fmt.Println("Start")
+
+	GeneCount = 2
+	HiddenCount = 1
+	BlipCount = 3
+
+	var Blips []TinyBlip
+
+	Blips = make([]TinyBlip, BlipCount)
+
+	for index := 0; index < BlipCount; index++ {
+		Blips[index].ID = index
+		g := Gene{}
+		g.V = int(cryptoRandSecure(int64(0xFFFFFFFF)))
+		g.Build()
+		Blips[index].GeneEncode = append(Blips[index].GeneEncode, g)
+	}
 
 	g := Gene{}
 	g.V = int(cryptoRandSecure(int64(0xFFFFFFFF)))
