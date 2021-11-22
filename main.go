@@ -87,7 +87,7 @@ func (tb *TinyBlip) Step() {
 		for ti := range tn.C {
 			ii += tb.N[ti].O
 		}
-		tb.N[i].I = ii
+		tb.N[i].I = math.Tanh(ii)
 	}
 
 }
@@ -95,6 +95,7 @@ func (tb *TinyBlip) Step() {
 var GeneCount int
 var HiddenCount int
 var BlipCount int
+var Generation int
 var Blips []TinyBlip
 
 func main() {
@@ -109,14 +110,31 @@ func main() {
 	for index := 0; index < BlipCount; index++ {
 		Blips[index].ID = index
 		Blips[index].GeneEncode = make([]Gene, GeneCount)
+
+		if Generation == 0 {
+			for k := 0; k < GeneCount; k++ {
+				Blips[index].GeneEncode[k].V = int(cryptoRandSecure(int64(0xFFFFFFFF)))
+			}
+		}
+
+		for k := 0; k < GeneCount; k++ {
+			Blips[index].GeneEncode[k].Build()
+		}
 		/*
 			g := Gene{}
 			g.V = int(cryptoRandSecure(int64(0xFFFFFFFF)))
 			g.Build()
 		*/
 
-		Blips[index].N = make([]Neuron, INCOUNT+HiddenCount)
-		//Blips[index].GeneEncode = append(Blips[index].GeneEncode, g)
+		Blips[index].N = make([]Neuron, INCOUNT+HiddenCount+OUTCOUNT)
+		for k := 0; k < GeneCount; k++ {
+			so := Blips[index].GeneEncode[k].SourceID
+			si := Blips[index].GeneEncode[k].SinkID
+
+			Blips[index].
+				Blips[index].GeneEncode[k].V = int(cryptoRandSecure(int64(0xFFFFFFFF)))
+		}
+
 	}
 
 	for index := 0; index < BlipCount; index++ {
