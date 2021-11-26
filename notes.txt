@@ -39,3 +39,23 @@ move randommove reverse
 move left/right (+/-) MLR
 move east/west (+/-)
 move north/south (+/-)
+
+
+
+
+only 4 directioms
+
+
+0 age
+1 NS  -1.0 North  1.0 south
+2 EW  -1.0 East   1.0 west
+3 Distance to blockage in front 0.0 blocked  1.0 30 = ~
+4 Neo Left 0,1
+5 Neo Forward 0,1
+6 Neo Right 0,1
+7 Neo behinf 0,1
+
+8 food Left 0,1
+9 food Forward 0,1
+10 food Right 0,1
+11 food behing 0,1
