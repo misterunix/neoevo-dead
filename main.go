@@ -22,6 +22,9 @@ func main() {
 	Program.WorldSize = Program.WorldX * Program.WorldY
 	World = make([]int, Program.WorldSize)
 
+	Program.MaxDistanceLook = 30
+	Program.FoodCount = 100 // Program.NumberOfNeos / 10
+
 	for i := 0; i < Program.WorldSize; i++ {
 		World[i] = -1
 	}
@@ -29,6 +32,28 @@ func main() {
 	err := initNeos()
 	if err != nil {
 		log.Fatalln(err)
+	}
+
+	PutNeosInWorld()
+
+	for count := 0; count < Program.NumberOfSteps; count++ {
+		Step0()
+		Step1()
+		CurrentStep++
+
+		fmt.Println(CurrentStep)
+
+		for i := range Neos {
+			err := PrintGenes(i)
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			err = PrintNeuron(i)
+			if err != nil {
+				log.Fatalln(err)
+			}
+		}
 	}
 
 }
@@ -42,6 +67,8 @@ func PutNeosInWorld() error {
 			y := randInt(Program.WorldY)
 			if World[XYtoIndex(x, y)] == -1 {
 				World[XYtoIndex(x, y)] = i
+				Neos[i].LocationX = x
+				Neos[i].LocationY = y
 				break
 			}
 			stupidCount++
@@ -66,20 +93,12 @@ func initNeos() error {
 
 		Neos[i].Neurons = make([]Neuron, 0)
 		Neos[i].Genes = make([]int, 0)
-
+		Neos[i].Inputs = make([]float64, Program.NumberOfInputs)
+		Neos[i].Outputs = make([]float64, Program.NumberOfOutputs)
 		for j := 0; j < Program.NumberOfGenes; j++ {
 			buildGenes(i)
 		}
 
-		err := PrintGenes(i)
-		if err != nil {
-			return err
-		}
-
-		err = PrintNeuron(i)
-		if err != nil {
-			return err
-		}
 	}
 	return nil
 }

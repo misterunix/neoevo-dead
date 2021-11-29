@@ -16,6 +16,10 @@ type PData struct {
 	NumberOfInputs  int // NumberOfInputs : The number of Input nodes. Must be equal to the NumberOfNeurons or less.
 	NumberOfOutputs int // NumberOfOutputs : The number of Output nodes. Must be equal to the NumberOfNeurons or less.
 
+	MaxHunger       int // MaxHunger :
+	MaxDistanceLook int // MaxDistanceLook :
+
+	FoodCount int // FoodCount :
 }
 
 type Neuron struct {
@@ -29,14 +33,18 @@ type Neuron struct {
 }
 
 type Neo struct {
-	ID      int
-	Age     float64
-	X       int
-	Y       int
-	Genes   []int
-	Neurons []Neuron
-	Inputs  []float64
-	Outputs []float64
+	ID        int
+	Age       float64
+	X         int
+	Y         int
+	Genes     []int
+	Neurons   []Neuron
+	Inputs    []float64
+	Outputs   []float64
+	LocationX int
+	LocationY int
+	Hunger    int
+	Direction int
 }
 
 type Point struct {
@@ -48,4 +56,7 @@ var Program PData
 
 var Neos []Neo
 
-var World []int // World : The world slice
+var World []int  // World : The world slice
+var Food []Point // Food in the world
+
+var CurrentStep int
