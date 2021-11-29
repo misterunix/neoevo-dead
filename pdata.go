@@ -3,20 +3,19 @@ package main
 // const, types and globals
 
 type PData struct {
-	MaxNeos   int // MaxNeos : Number of Neos per generation.
-	MaxLayers int // MaxLayers : Number of layers where 0 is input, MaxLayers-1 is output. Inbetween are hidden.
-
-	MaxSteps int // MaxSteps : Number of steps in this generation.
-
+	NumberOfNeos    int // NumberOfNeos : Number of Neos per generation.
+	NumberOfGenes   int // NumberOfGenes : Number of genes in a Neo
+	NumberOfLayers  int // NumberOfLayers : Number of layers where 0 is input, MaxLayers-1 is output. Inbetween are hidden.
+	NumberOfNeurons int // NumberOfNeurons : Number of Neurons per layer
+	NumberOfSteps   int // NumberOfSteps : Number of steps in this generation.
 }
 
 type Neuron struct {
 	InValue  float64
 	OutValue float64
 	Weight   float64
-	ID       int
 	Layer    int
-	Out      []int
+	Out      int
 }
 
 type Neo struct {
@@ -24,7 +23,8 @@ type Neo struct {
 	Age     float64
 	X       int
 	Y       int
-	Neurons map[int]Neuron
+	Genes   []int
+	Neurons []Neuron
 }
 
 var Program PData
