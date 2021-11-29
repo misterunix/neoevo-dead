@@ -7,10 +7,13 @@ import (
 
 func main() {
 
+	Program.NumberOfInputs = 10
+	Program.NumberOfOutputs = 5
+
 	Program.NumberOfNeos = 10
 	Program.NumberOfGenes = 16
-	Program.NumberOfNeurons = 16
-	Program.NumberOfLayers = 3
+	Program.NumberOfNeurons = 32
+	Program.NumberOfLayers = 4
 
 	Program.NumberOfSteps = 300
 

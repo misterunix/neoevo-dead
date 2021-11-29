@@ -13,14 +13,19 @@ type PData struct {
 	WorldX    int // WorldX : Number of cells in the X plane.
 	WorldY    int // WorldY : Number of cells in the Y plane.
 
+	NumberOfInputs  int // NumberOfInputs : The number of Input nodes. Must be equal to the NumberOfNeurons or less.
+	NumberOfOutputs int // NumberOfOutputs : The number of Output nodes. Must be equal to the NumberOfNeurons or less.
+
 }
 
 type Neuron struct {
-	InValue  float64
-	OutValue float64
-	Weight   float64
-	Layer    int
-	Out      int
+	InValue     float64
+	OutValue    float64
+	Weight      float64
+	SourceLayer int
+	Source      int
+	OutLayer    int
+	Out         int
 }
 
 type Neo struct {
@@ -30,6 +35,8 @@ type Neo struct {
 	Y       int
 	Genes   []int
 	Neurons []Neuron
+	Inputs  []float64
+	Outputs []float64
 }
 
 type Point struct {
