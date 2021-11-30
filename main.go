@@ -24,6 +24,7 @@ func main() {
 
 	Program.MaxDistanceLook = 30
 	Program.FoodCount = 100 // Program.NumberOfNeos / 10
+	Program.MaxHunger = 30
 
 	for i := 0; i < Program.WorldSize; i++ {
 		World[i] = -1
@@ -39,6 +40,7 @@ func main() {
 	for count := 0; count < Program.NumberOfSteps; count++ {
 		Step0()
 		Step1()
+		Step2()
 		CurrentStep++
 
 		fmt.Println(CurrentStep)
@@ -95,6 +97,7 @@ func initNeos() error {
 		Neos[i].Genes = make([]int, 0)
 		Neos[i].Inputs = make([]float64, Program.NumberOfInputs)
 		Neos[i].Outputs = make([]float64, Program.NumberOfOutputs)
+		Neos[i].Hunger = 0
 		for j := 0; j < Program.NumberOfGenes; j++ {
 			buildGenes(i)
 		}

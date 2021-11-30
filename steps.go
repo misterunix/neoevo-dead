@@ -1,5 +1,7 @@
 package main
 
+import "math"
+
 func PlaceFood() {
 
 	for i, f := range Food {
@@ -151,6 +153,7 @@ func Step0() {
 	}
 }
 
+// Step1 : Move the Neo's inputs to the neurons
 func Step1() {
 	for i := range Neos {
 		for j, n := range Neos[i].Neurons {
@@ -159,4 +162,46 @@ func Step1() {
 			}
 		}
 	}
+}
+
+func Step2() {
+
+	for i := range Neos { // Loop throught the Neos
+
+		for j := 0; j < Program.NumberOfLayers-1; j++ { // Layer by Layer
+
+			for k, m := range Neos[i].Neurons { // Loop through the Neurons
+
+				if m.SourceLayer == j { // Does SourceLayer match loop j
+
+					Neos[i].Neurons[k].OutValue = m.InValue * m.Weight
+
+					for n, o := range Neos[i].Neurons { // Loop through the neurons again looking for match
+
+						if n == k { // Skip if same neuron
+							continue
+						}
+
+						if o.SourceLayer == m.OutLayer && o.Out == m.Out {
+							Neos[i].Neurons[n].InValue += Neos[i].Neurons[k].OutValue
+						}
+
+					}
+
+				}
+
+			}
+
+			if j != 0 {
+				for k, m := range Neos[i].Neurons {
+					if m.SourceLayer == j {
+						Neos[i].Neurons[k].InValue = math.Tanh(m.InValue)
+					}
+				}
+			}
+
+		}
+
+	}
+
 }

@@ -8,9 +8,9 @@ func decode(g int) Neuron {
 	weight := (float64(weightI)/65535.0)*8 - 4.0
 
 	source := (g & 0xFF000000 >> 24) & 0x1F
-	sourcelayer := ((g & 0xFF000000 >> 24) & 0xE0) >> 5
+	sourcelayer := (((g & 0xFF000000 >> 24) & 0xE0) >> 5) % Program.NumberOfLayers
 	out := (g & 0x00FF0000 >> 16) & 0x1F
-	outlayer := ((g & 0x00FF0000 >> 16) & 0xE0) >> 5
+	outlayer := (((g & 0x00FF0000 >> 16) & 0xE0) >> 5) % Program.NumberOfLayers
 
 	//node := (g & 0x0FF00000 >> 24) % Program.NumberOfNeurons
 
