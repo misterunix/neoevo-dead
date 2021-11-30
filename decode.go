@@ -38,7 +38,7 @@ func decode(g int) Neuron {
 }
 
 func buildGenes(id int) error {
-	if id >= Program.NumberOfNeos || id < 0 {
+	if id > Program.NumberOfNeos || id < 1 {
 		return fmt.Errorf("buildNeurons id '%d' is out of bounds", id)
 	}
 

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"sync"
 )
 
 func main() {
@@ -10,10 +11,10 @@ func main() {
 	Program.NumberOfInputs = 10
 	Program.NumberOfOutputs = 10
 
-	Program.NumberOfNeos = 10
+	Program.NumberOfNeos = 3000
 	Program.NumberOfGenes = 16
 	Program.NumberOfNeurons = 32
-	Program.NumberOfLayers = 4
+	Program.NumberOfLayers = 3
 
 	Program.NumberOfSteps = 300
 
@@ -21,13 +22,15 @@ func main() {
 	Program.WorldY = 128
 	Program.WorldSize = Program.WorldX * Program.WorldY
 	World = make([]int, Program.WorldSize)
+	WorldTmp = make([]int, Program.WorldSize)
 
 	Program.MaxDistanceLook = 30
-	Program.FoodCount = 100 // Program.NumberOfNeos / 10
+	Program.FoodCount = Program.NumberOfNeos / 4
 	Program.MaxHunger = 30
 
 	for i := 0; i < Program.WorldSize; i++ {
-		World[i] = -1
+		World[i] = 0
+		WorldTmp[i] = 0
 	}
 
 	err := initNeos()
@@ -40,37 +43,56 @@ func main() {
 	for count := 0; count < Program.NumberOfSteps; count++ {
 		Step0()
 		Step1()
-		Step2()
+
+		var wg sync.WaitGroup
+		quickCount := 0
+		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
+			//fmt.Println("quickCount", quickCount)
+			if quickCount == 0 {
+				wg.Add(10)
+			}
+			go Step2(ni, &wg)
+			quickCount++
+			if quickCount == 10 {
+				wg.Wait()
+				quickCount = 0
+			}
+		}
+
 		CurrentStep++
 
 		//fmt.Println(CurrentStep)
 
 	}
 
-	for i := range Neos {
-		fmt.Println("Neo", i)
-		err := PrintGenes(i)
-		if err != nil {
-			log.Fatalln(err)
-		}
+	/*
+		for i := range Neos {
+			if i == 0 { // skip 0
+				continue
+			}
+			fmt.Println("Neo", i)
+			err := PrintGenes(i)
+			if err != nil {
+				log.Fatalln(err)
+			}
 
-		//err = PrintNeuron(i)
-		err = PrintNet(i)
-		if err != nil {
-			log.Fatalln(err)
+			//err = PrintNeuron(i)
+			err = PrintNet(i)
+			if err != nil {
+				log.Fatalln(err)
+			}
 		}
-	}
-
+	*/
 }
 
 func PutNeosInWorld() error {
 
-	for i := 0; i < Program.NumberOfNeos; i++ {
+	for i := 1; i <= Program.NumberOfNeos; i++ {
 		stupidCount := 0
 		for {
 			x := randInt(Program.WorldX)
 			y := randInt(Program.WorldY)
-			if World[XYtoIndex(x, y)] == -1 {
+			if World[XYtoIndex(x, y)] == 0 {
 				World[XYtoIndex(x, y)] = i
 				Neos[i].LocationX = x
 				Neos[i].LocationY = y
@@ -87,14 +109,14 @@ func PutNeosInWorld() error {
 
 func initNeos() error {
 
-	Neos = make([]Neo, Program.NumberOfNeos)
+	Neos = make([]Neo, Program.NumberOfNeos+1)
 
 	err := PutNeosInWorld()
 	if err != nil {
 		return err
 	}
 
-	for i := 0; i < Program.NumberOfNeos; i++ {
+	for i := 1; i <= Program.NumberOfNeos; i++ {
 
 		Neos[i].Neurons = make([]Neuron, 0)
 		Neos[i].Genes = make([]int, 0)

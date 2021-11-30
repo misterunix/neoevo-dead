@@ -1,6 +1,8 @@
 package main
 
-import "math"
+import (
+	"math"
+)
 
 const (
 	DEG2RAD = 0.0174532925

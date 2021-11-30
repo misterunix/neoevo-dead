@@ -5,7 +5,7 @@ import (
 )
 
 func PrintGenes(id int) error {
-	if id >= Program.NumberOfNeos || id < 0 {
+	if id > Program.NumberOfNeos || id < 1 {
 		return fmt.Errorf("PrintGenes id '%d' is out of bounds", id)
 	}
 	//fmt.Println("Printing genes.")
@@ -22,7 +22,7 @@ func PrintGenes(id int) error {
 }
 
 func PrintNeuron(id int) error {
-	if id >= Program.NumberOfNeos || id < 0 {
+	if id > Program.NumberOfNeos || id < 1 {
 		return fmt.Errorf("PrintGenes id '%d' is out of bounds", id)
 	}
 
@@ -33,7 +33,7 @@ func PrintNeuron(id int) error {
 }
 
 func PrintNet(id int) error {
-	if id >= Program.NumberOfNeos || id < 0 {
+	if id > Program.NumberOfNeos || id < 1 {
 		return fmt.Errorf("PrintNet id '%d' is out of bounds", id)
 	}
 

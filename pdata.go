@@ -57,7 +57,9 @@ var Program PData
 
 var Neos []Neo
 
-var World []int  // World : The world slice
+var World []int    // World : The world slice
+var WorldTmp []int // WorldTmp : Update to world. Copy back to World when done.
+
 var Food []Point // Food in the world
 
 var CurrentStep int

@@ -6,6 +6,23 @@ Experiment in machine learning and genetic evolution.
 # neoevo
 
 
+No go routines 
+1m52.470s
+
+2
+1m46.870s
+
+4
+1m45.790s
+
+10
+1m46.509s
+
+Something is not working!
+Ah I think its the sync.WaitGroup
+
+
+
 ## Gene Decode
 Genes are 32 bit Integers stored in each Neo's struct. 
   - bits 

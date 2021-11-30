@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"math"
+	"sync"
 )
 
 func PlaceFood() {
@@ -10,7 +13,7 @@ func PlaceFood() {
 		if f.X == -1 {
 			for {
 				j := randInt(Program.WorldSize)
-				if World[j] == -1 {
+				if World[j] == 0 {
 					World[j] = -2
 					p := IndexToXY(j)
 					Food[i] = p
@@ -24,6 +27,9 @@ func PlaceFood() {
 func Step0() {
 
 	for i := range Neos {
+		if i == 0 { // start with 1
+			continue
+		}
 		distanceFromNorth := float64(Program.WorldY-Neos[i].LocationY)/float64(Program.WorldY)*2.0 - 1.0
 		distanceFromWest := float64(Program.WorldX-Neos[i].LocationX)/float64(Program.WorldX)*2.0 - 1.0
 		Neos[i].Inputs[0] = float64(CurrentStep) / float64(Program.NumberOfSteps)
@@ -43,12 +49,19 @@ func Step0() {
 			ty := Neos[i].LocationY + (indexS * p.Y)
 
 			// Check end of world
-			if tx >= Program.WorldX || ty >= Program.WorldY {
+			if tx >= Program.WorldX || ty >= Program.WorldY || tx < 0 || ty < 0 {
 				td = GetDistance(float64(Neos[i].LocationX), float64(Neos[i].LocationY), float64(tx), float64(ty))
 				if td > float64(Program.MaxDistanceLook) {
 					Neos[i].Inputs[8] = -1.0
+					//fmt.Println("Should break", tx, ty)
 					break
 				}
+				Neos[i].Inputs[8] = td
+				break
+			}
+
+			if tx >= Program.WorldX || ty >= Program.WorldY {
+				log.Fatalln(Neos[i].LocationX, Neos[i].LocationY, "tx", tx, "ty", ty)
 			}
 
 			if World[XYtoIndex(tx, ty)] != 0 {
@@ -86,12 +99,14 @@ func Step0() {
 			ty := Neos[i].LocationY + (indexS * p.Y)
 
 			// Check end of world
-			if tx >= Program.WorldX || ty >= Program.WorldY {
+			if tx >= Program.WorldX || ty >= Program.WorldY || tx < 0 || ty < 0 {
 				td = GetDistance(float64(Neos[i].LocationX), float64(Neos[i].LocationY), float64(tx), float64(ty))
 				if td > float64(Program.MaxDistanceLook) {
 					Neos[i].Inputs[9] = -1.0
 					break
 				}
+				Neos[i].Inputs[9] = td
+				break
 			}
 
 			if World[XYtoIndex(tx, ty)] != 0 {
@@ -134,6 +149,9 @@ func Step0() {
 		d = 100000.0
 		a = 0.0
 		for j, k := range Neos {
+			if j == 0 { // Skip 0
+				continue
+			}
 			if j == i {
 				continue
 			}
@@ -158,6 +176,9 @@ func Step0() {
 // Step1 : Move the Neo's inputs to the neurons
 func Step1() {
 	for i := range Neos {
+		if i == 0 { // Skip 0
+			continue
+		}
 		for j, n := range Neos[i].Neurons {
 			if n.SourceLayer == 0 {
 				Neos[i].Neurons[j].InValue = Neos[i].Inputs[n.Source]
@@ -167,51 +188,58 @@ func Step1() {
 }
 
 // Step2 : Propigate out to in and sum and pass through tanh.
-func Step2() {
+func Step2(i int, wg *sync.WaitGroup) error {
 
-	for i := range Neos { // Loop throught the Neos
+	if i > Program.NumberOfNeos || i < 1 {
+		return fmt.Errorf("Step2 id '%d' is out of bounds", i)
+	}
 
-		for j := 0; j < Program.NumberOfLayers-1; j++ { // Layer by Layer
+	//	for i := range Neos { // Loop throught the Neos
+	//if i == 0 { // skip 0
+	//continue
+	//}
 
-			for k, m := range Neos[i].Neurons { // Loop through the Neurons
+	for j := 0; j < Program.NumberOfLayers-1; j++ { // Layer by Layer
 
-				if m.SourceLayer == j { // Does SourceLayer match loop j
+		for k, m := range Neos[i].Neurons { // Loop through the Neurons
 
-					Neos[i].Neurons[k].OutValue = m.InValue * m.Weight
+			if m.SourceLayer == j { // Does SourceLayer match loop j
 
-					for n, o := range Neos[i].Neurons { // Loop through the neurons again looking for match
+				Neos[i].Neurons[k].OutValue = m.InValue * m.Weight
 
-						if n == k { // Skip if same neuron
-							continue
-						}
+				for n, o := range Neos[i].Neurons { // Loop through the neurons again looking for match
 
-						if o.SourceLayer == m.OutLayer && o.Out == m.Out {
-							Neos[i].Neurons[n].InValue += Neos[i].Neurons[k].OutValue
-						}
+					if n == k { // Skip if same neuron
+						continue
+					}
 
+					if o.SourceLayer == m.OutLayer && o.Out == m.Out {
+						Neos[i].Neurons[n].InValue += Neos[i].Neurons[k].OutValue
 					}
 
 				}
 
-			}
-
-			if j != 0 {
-				for k, m := range Neos[i].Neurons {
-					if m.SourceLayer == j {
-						Neos[i].Neurons[k].InValue = math.Tanh(m.InValue)
-					}
-				}
 			}
 
 		}
 
+		if j != 0 {
+			for k, m := range Neos[i].Neurons {
+				if m.SourceLayer == j {
+					Neos[i].Neurons[k].InValue = math.Tanh(m.InValue)
+				}
+			}
+		}
+
 	}
 
+	wg.Done()
+	return nil
 }
 
 func Step3() {
 
-	for i := 0; i < Program.NumberOfNeos; i++ {
+	for i := 1; i < Program.NumberOfNeos; i++ { // skip 0
 		// Check if Neo died from hunger
 		if Neos[i].Hunger == 0 {
 			Neos[i].Dead = true
@@ -227,7 +255,7 @@ func Step3() {
 }
 
 func probability(p float64) bool {
-	if randFloat() <= p {
+	if randFloat() <= math.Abs(p) {
 		return true
 	}
 	return false

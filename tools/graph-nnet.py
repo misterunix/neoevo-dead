@@ -6,7 +6,7 @@ import igraph
 g = igraph.Graph.Read_Ncol('net.txt', names=True, weights=True)
 
 for v in g.vs:
-	v['size'] = 35
+	v['size'] = 55
 	v['label'] = v['name']
 	if v['name'] in ['Lx', 'Ly', 'EDx', 'EDy', 'ED', 'Bfd', 'Blr', 'Gen', 'LMx', 'LMy', 'LPf', 'LPb', 'Pop', 'Pfd', 'Plr', 'Osc', 'Age', 'Rnd', 'Sg', 'Sfd', 'Slr']:
 		v['color'] = 'lightblue'
