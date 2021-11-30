@@ -8,7 +8,7 @@ import (
 func main() {
 
 	Program.NumberOfInputs = 10
-	Program.NumberOfOutputs = 5
+	Program.NumberOfOutputs = 10
 
 	Program.NumberOfNeos = 10
 	Program.NumberOfGenes = 16
@@ -43,18 +43,21 @@ func main() {
 		Step2()
 		CurrentStep++
 
-		fmt.Println(CurrentStep)
+		//fmt.Println(CurrentStep)
 
-		for i := range Neos {
-			err := PrintGenes(i)
-			if err != nil {
-				log.Fatalln(err)
-			}
+	}
 
-			err = PrintNeuron(i)
-			if err != nil {
-				log.Fatalln(err)
-			}
+	for i := range Neos {
+		fmt.Println("Neo", i)
+		err := PrintGenes(i)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		//err = PrintNeuron(i)
+		err = PrintNet(i)
+		if err != nil {
+			log.Fatalln(err)
 		}
 	}
 

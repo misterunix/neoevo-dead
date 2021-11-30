@@ -1,6 +1,8 @@
 package main
 
-import "math"
+import (
+	"math"
+)
 
 func PlaceFood() {
 
@@ -164,6 +166,7 @@ func Step1() {
 	}
 }
 
+// Step2 : Propigate out to in and sum and pass through tanh.
 func Step2() {
 
 	for i := range Neos { // Loop throught the Neos
@@ -204,4 +207,28 @@ func Step2() {
 
 	}
 
+}
+
+func Step3() {
+
+	for i := 0; i < Program.NumberOfNeos; i++ {
+		// Check if Neo died from hunger
+		if Neos[i].Hunger == 0 {
+			Neos[i].Dead = true
+			continue
+		}
+		if Neos[i].Dead {
+			continue
+		}
+
+		// Moves
+	}
+
+}
+
+func probability(p float64) bool {
+	if randFloat() <= p {
+		return true
+	}
+	return false
 }

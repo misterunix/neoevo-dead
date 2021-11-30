@@ -45,6 +45,7 @@ type Neo struct {
 	LocationY int
 	Hunger    int
 	Direction int
+	Dead      bool // Dead : True dead. False alive
 }
 
 type Point struct {
