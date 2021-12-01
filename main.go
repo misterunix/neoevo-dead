@@ -1,24 +1,23 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
-	"runtime"
-	"sync"
+	"time"
 
+	"github.com/misterunix/parallel"
 	"github.com/misterunix/sniffle/systemcpu"
 )
 
 func main() {
 
-	var numberOfThreads int
+	//var numberOfThreads int
 
-	flag.IntVar(&numberOfThreads, "threads", 2, "Number of threads to use.")
+	//flag.IntVar(&numberOfThreads, "threads", 2, "Number of threads to use.")
 
-	flag.Parse()
+	//flag.Parse()
 
-	buffers = make(chan bool, numberOfThreads)
+	// buffers = make(chan bool, numberOfThreads)
 
 	Program.NumberOfInputs = 10
 	Program.NumberOfOutputs = 10
@@ -51,8 +50,10 @@ func main() {
 	fmt.Println("Goroutines", sr.Goroutines)
 	fmt.Println("PID", sr.PID)
 
-	runtime.GOMAXPROCS(10)
-	fmt.Println(runtime.GOMAXPROCS(10))
+	//runtime.GOMAXPROCS(10)
+	//fmt.Println(runtime.GOMAXPROCS(10))
+
+	start := time.Now()
 
 	for i := 0; i < Program.WorldSize; i++ {
 		World[i] = 0
@@ -67,22 +68,40 @@ func main() {
 	PutNeosInWorld()
 
 	for count := 0; count < Program.NumberOfSteps; count++ {
-		Step0()
-		Step1()
+		//ti := time.Now()
+		p0 := parallel.NewParallel()
+		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
+			p0.Register(Step0, ni).SetReceivers()
+		}
+		p0.Run()
+		//fmt.Println("Step0:", time.Since(ti))
+
+		//ti = time.Now()
+		p1 := parallel.NewParallel()
+		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
+			p1.Register(Step1, ni).SetReceivers()
+		}
+		p1.Run()
+		//	fmt.Println("Step1:", time.Since(ti))
 
 		//fmt.Println("Loop Count:", count)
 
-		var wg sync.WaitGroup
+		//	ti = time.Now()
+		p2 := parallel.NewParallel()
+		//var wg sync.WaitGroup
 		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
-			wg.Add(1)
-			go Step2(ni, &wg)
+			//wg.Add(1)
+			//go Step2(ni, &wg)
+			p2.Register(Step2, ni).SetReceivers()
 			//go Step2(ni+1, &wg)
 			//fmt.Println("Len:", len(buffers), cap(buffers))
 		}
+		p2.Run()
+		//	fmt.Println("Step2:", time.Since(ti))
 		//fmt.Println("len:", len(buffers), cap(buffers))
 		//sr.GetGo()
 		//fmt.Println("Goroutines", sr.Goroutines)
-		wg.Wait()
+		//wg.Wait()
 
 		CurrentStep++
 
@@ -107,7 +126,7 @@ func main() {
 			}
 		}
 	*/
-
+	fmt.Println("Time:", time.Since(start))
 }
 
 func PutNeosInWorld() error {

@@ -8,6 +8,31 @@ Experiment in machine learning and genetic evolution.
 
 ## timming
 
+Turns out that Step2 is not the hog. Step0 is
+- Step0: 349.411068ms
+- Step1: 682.107µs
+- Step2: 8.858252ms
+- Time: 1m46.602564818s
+
+Changing all the floats to single call didnt help
+- Step0: 343.755265ms
+- Step1: 639.638µs
+- Step2: 9.01311ms
+- Time: 1m46.02379421s
+
+Converting Step0,1,2 all to Parallel
+- Step0: 150.113254ms
+- Step1: 7.823935ms
+- Step2: 9.009151ms
+- Time: 50.630654178s
+
+Removed all the prints
+- Time: 50.071533061s
+- 382% cpu
+
+
+Using the wg method
+
 - No go routines 
   - 1m50.319s
 - time ./neoevo -threads 2

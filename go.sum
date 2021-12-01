@@ -1,2 +1,6 @@
+github.com/buptmiao/parallel v0.0.0-20170103080846-f8134e9f60c6 h1:LvlqzDHYGWyxuJQj8QzzZPC6nbOBBnfrH28zHY9gLgo=
+github.com/buptmiao/parallel v0.0.0-20170103080846-f8134e9f60c6/go.mod h1:FEA3W6N8c6UeqZbc3ZvfRr2mXleMNEXOEp2AzoGjI1o=
+github.com/misterunix/parallel v0.0.0-20170103080846-f8134e9f60c6 h1:KGnCQei6vZGTNliTz/fXFKC6C3OzcVeh+rVXF9CjeRo=
+github.com/misterunix/parallel v0.0.0-20170103080846-f8134e9f60c6/go.mod h1:zCpqhZ5DdPik/lU50nf9RpG8NhQZiIcM0PTntBG0NNo=
 github.com/misterunix/sniffle v1.0.1 h1:K21x5uIZhnwX45V3L1HxW3VdndtV8Gu6Iqtlq2bqKac=
 github.com/misterunix/sniffle v1.0.1/go.mod h1:pBT3y2C1eRO62i7d55lncKWsJv1eycoSAn2hwYWoj6Q=

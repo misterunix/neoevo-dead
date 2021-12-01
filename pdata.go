@@ -64,4 +64,4 @@ var Food []Point // Food in the world
 
 var CurrentStep int
 
-var buffers chan bool
+//var buffers chan bool
