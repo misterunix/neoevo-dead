@@ -103,6 +103,7 @@ func main() {
 		//fmt.Println("Goroutines", sr.Goroutines)
 		//wg.Wait()
 
+		createpng(count)
 		CurrentStep++
 
 		//fmt.Println(CurrentStep)
