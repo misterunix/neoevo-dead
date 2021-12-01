@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/misterunix/parallel"
@@ -22,7 +23,7 @@ func main() {
 	Program.NumberOfInputs = 10
 	Program.NumberOfOutputs = 10
 
-	Program.NumberOfNeos = 3000
+	Program.NumberOfNeos = 300
 	Program.NumberOfGenes = 16
 	Program.NumberOfNeurons = 32
 	Program.NumberOfLayers = 3
@@ -65,7 +66,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	PutNeosInWorld()
+	// PutNeosInWorld()
 
 	for count := 0; count < Program.NumberOfSteps; count++ {
 		//ti := time.Now()
@@ -104,6 +105,7 @@ func main() {
 		//wg.Wait()
 
 		createpng(count)
+		os.Exit(0)
 		CurrentStep++
 
 		//fmt.Println(CurrentStep)
@@ -132,15 +134,20 @@ func main() {
 
 func PutNeosInWorld() error {
 
+	//ugg := 0
 	for i := 1; i <= Program.NumberOfNeos; i++ {
 		stupidCount := 0
+
 		for {
+
 			x := randInt(Program.WorldX)
 			y := randInt(Program.WorldY)
+
 			if World[XYtoIndex(x, y)] == 0 {
 				World[XYtoIndex(x, y)] = i
 				Neos[i].LocationX = x
 				Neos[i].LocationY = y
+				//ugg++
 				break
 			}
 			stupidCount++
@@ -148,7 +155,9 @@ func PutNeosInWorld() error {
 				return fmt.Errorf("PutNeosInWorld was not able to place all the Neos. Max count reached")
 			}
 		}
+
 	}
+	//fmt.Println(ugg)
 	return nil
 }
 
