@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/misterunix/parallel"
@@ -23,7 +22,7 @@ func main() {
 	Program.NumberOfInputs = 10
 	Program.NumberOfOutputs = 10
 
-	Program.NumberOfNeos = 300
+	Program.NumberOfNeos = 1000
 	Program.NumberOfGenes = 16
 	Program.NumberOfNeurons = 32
 	Program.NumberOfLayers = 3
@@ -105,7 +104,7 @@ func main() {
 		//wg.Wait()
 
 		createpng(count)
-		os.Exit(0)
+		//	os.Exit(0)
 		CurrentStep++
 
 		//fmt.Println(CurrentStep)
