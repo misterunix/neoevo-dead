@@ -11,9 +11,9 @@ func createpng(i int) {
 	dc := gg.NewContext(128, 128)
 
 	dc.DrawRectangle(0, 0, 128, 128)
-	dc.SetRGB(0, 0, 0)
+	dc.SetRGB(255, 255, 255)
 	dc.Fill()
-	dc.SetRGB(0xcc, 0xcc, 0xcc)
+	dc.SetRGB(0x00, 0x00, 0x00)
 	for y := 0; y < Program.WorldY; y++ {
 		for x := 0; x < Program.WorldX; x++ {
 			v := World[XYtoIndex(x, y)]
