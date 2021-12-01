@@ -6,20 +6,20 @@ Experiment in machine learning and genetic evolution.
 # neoevo
 
 
-No go routines 
-1m52.470s
+## timming
 
-2
-1m46.870s
+- No go routines 
+  - 1m50.319s
+- time ./neoevo -threads 2
+  - 1m47.457s
+- time ./neoevo -threads 10
+  - 1m45.733s
+- time ./neoevo -threads 20
+  - 
+- time ./neoevo -threads 50
+  - 1m45.598s
 
-4
-1m45.790s
 
-10
-1m46.509s
-
-Something is not working!
-Ah I think its the sync.WaitGroup
 
 
 
@@ -111,7 +111,7 @@ Genes are 32 bit Integers stored in each Neo's struct.
 
 
 ### Movement rule
-Working off the back of the the genius that is [Steve Miller](https://github.com/davidrmiller). His idea of movement far exceeds my over my own. I humbley adapt his movement idea to my sim. This is his concept and I state his copyright here. The below is copyright by [Steve Miller](https://github.com/davidrmiller) under the MIT License. 
+Working off the back of the the genius that is [Steve Miller](https://github.com/davidrmiller). His idea of movement far exceeds over my own. I humbley adapt his movement idea to my sim. This is his concept and I state his copyright here. The below is copyright by [Steve Miller](https://github.com/davidrmiller) under the MIT License. 
 
     // There are multiple action neurons for movement. Each type of movement neuron
     // urges the individual to move in some specific direction. We sum up all the

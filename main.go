@@ -1,12 +1,23 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"sync"
+
+	"github.com/misterunix/sniffle/systemcpu"
 )
 
 func main() {
+
+	var numberOfThreads int
+
+	flag.IntVar(&numberOfThreads, "threads", 2, "Number of threads to use.")
+
+	flag.Parse()
+
+	buffers = make(chan bool, numberOfThreads)
 
 	Program.NumberOfInputs = 10
 	Program.NumberOfOutputs = 10
@@ -28,6 +39,17 @@ func main() {
 	Program.FoodCount = Program.NumberOfNeos / 4
 	Program.MaxHunger = 30
 
+	sr := systemcpu.SysRun{}
+
+	sr.Update()
+
+	fmt.Println("CPUCount", sr.CPUCount)
+	fmt.Println("Architecture", sr.Architecture)
+	fmt.Println("OS", sr.OS)
+	fmt.Println("GoVersion", sr.GoVersion)
+	fmt.Println("Goroutines", sr.Goroutines)
+	fmt.Println("PID", sr.PID)
+
 	for i := 0; i < Program.WorldSize; i++ {
 		World[i] = 0
 		WorldTmp[i] = 0
@@ -44,25 +66,23 @@ func main() {
 		Step0()
 		Step1()
 
+		//fmt.Println("Loop Count:", count)
+
 		var wg sync.WaitGroup
-		quickCount := 0
 		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
-			//fmt.Println("quickCount", quickCount)
-			if quickCount == 0 {
-				wg.Add(10)
-			}
+			wg.Add(1)
 			go Step2(ni, &wg)
-			quickCount++
-			if quickCount == 10 {
-				wg.Wait()
-				quickCount = 0
-			}
+			//go Step2(ni+1, &wg)
+			//fmt.Println("Len:", len(buffers), cap(buffers))
 		}
+		fmt.Println("len:", len(buffers), cap(buffers))
+		//sr.GetGo()
+		//fmt.Println("Goroutines", sr.Goroutines)
+		wg.Wait()
 
 		CurrentStep++
 
 		//fmt.Println(CurrentStep)
-
 	}
 
 	/*
@@ -83,6 +103,7 @@ func main() {
 			}
 		}
 	*/
+
 }
 
 func PutNeosInWorld() error {

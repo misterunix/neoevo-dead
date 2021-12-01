@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"math"
 	"sync"
@@ -188,11 +187,15 @@ func Step1() {
 }
 
 // Step2 : Propigate out to in and sum and pass through tanh.
-func Step2(i int, wg *sync.WaitGroup) error {
+func Step2(i int, wg *sync.WaitGroup) {
+
+	buffers <- true
 
 	if i > Program.NumberOfNeos || i < 1 {
-		return fmt.Errorf("Step2 id '%d' is out of bounds", i)
+		log.Fatalf("Step2 id '%d' is out of bounds", i)
 	}
+
+	defer wg.Done()
 
 	//	for i := range Neos { // Loop throught the Neos
 	//if i == 0 { // skip 0
@@ -230,11 +233,9 @@ func Step2(i int, wg *sync.WaitGroup) error {
 				}
 			}
 		}
-
 	}
 
-	wg.Done()
-	return nil
+	<-buffers
 }
 
 func Step3() {
