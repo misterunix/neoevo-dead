@@ -18,6 +18,7 @@ Experiment in machine learning and genetic evolution.
   - 
 - time ./neoevo -threads 50
   - 1m45.598s
+- time ./neoevo -threads 100
 
 
 

@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"runtime"
 	"sync"
 
 	"github.com/misterunix/sniffle/systemcpu"
@@ -50,6 +51,9 @@ func main() {
 	fmt.Println("Goroutines", sr.Goroutines)
 	fmt.Println("PID", sr.PID)
 
+	runtime.GOMAXPROCS(10)
+	fmt.Println(runtime.GOMAXPROCS(10))
+
 	for i := 0; i < Program.WorldSize; i++ {
 		World[i] = 0
 		WorldTmp[i] = 0
@@ -75,7 +79,7 @@ func main() {
 			//go Step2(ni+1, &wg)
 			//fmt.Println("Len:", len(buffers), cap(buffers))
 		}
-		fmt.Println("len:", len(buffers), cap(buffers))
+		//fmt.Println("len:", len(buffers), cap(buffers))
 		//sr.GetGo()
 		//fmt.Println("Goroutines", sr.Goroutines)
 		wg.Wait()

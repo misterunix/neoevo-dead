@@ -191,11 +191,13 @@ func Step2(i int, wg *sync.WaitGroup) {
 
 	buffers <- true
 
+	//fmt.Println("Len inside of Step2", len(buffers))
+
 	if i > Program.NumberOfNeos || i < 1 {
 		log.Fatalf("Step2 id '%d' is out of bounds", i)
 	}
 
-	defer wg.Done()
+	//defer wg.Done()
 
 	//	for i := range Neos { // Loop throught the Neos
 	//if i == 0 { // skip 0
@@ -236,6 +238,7 @@ func Step2(i int, wg *sync.WaitGroup) {
 	}
 
 	<-buffers
+	wg.Done()
 }
 
 func Step3() {
