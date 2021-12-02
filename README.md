@@ -42,7 +42,8 @@ Using the wg method
 - time ./neoevo -threads 100
 
 
-
+## Documentaion
+gomarkdoc -u > DEVDOC.md
 
 
 ## Gene Decode
@@ -164,3 +165,7 @@ Working off the back of the the genius that is [Steve Miller](https://github.com
 | 180 |  *  | 000 |   | 0.500 |   *   | 0.000 |
 | 135 | 090 | 045 |   | 0.375 | 0.250 | 0.125 |
 |     |     |     |   |       |       |       |
+
+
+
+

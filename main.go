@@ -19,7 +19,7 @@ func main() {
 	Program.NumberOfOutputs = 12
 
 	Program.NumberOfNeos = 10
-	Program.NumberOfGenes = 16
+	Program.NumberOfGenes = 4
 	Program.NumberOfNeurons = 12
 	Program.NumberOfLayers = 3
 
@@ -46,8 +46,9 @@ func main() {
 	fmt.Println("Goroutines", sr.Goroutines)
 	fmt.Println("PID", sr.PID)
 
-	start := time.Now()
+	start := time.Now() // Get the current time. Used for timming the execution of the sim.
 
+	// Clear the world slices.
 	for i := 0; i < Program.WorldSize; i++ {
 		World[i] = 0
 		WorldTmp[i] = 0
@@ -82,6 +83,7 @@ func main() {
 
 		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
 			PrintIO(ni)
+			PrintNeuron(ni)
 		}
 
 		createpng(count)

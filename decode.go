@@ -2,6 +2,7 @@ package main
 
 import "fmt"
 
+// decode :
 func decode(g int) Neuron {
 
 	weightI := (g & 0x0000FFFF)
@@ -37,6 +38,7 @@ func decode(g int) Neuron {
 	return tn
 }
 
+// buildGenes :
 func buildGenes(id int) error {
 	if id > Program.NumberOfNeos || id < 1 {
 		return fmt.Errorf("buildNeurons id '%d' is out of bounds", id)

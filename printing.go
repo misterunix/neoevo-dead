@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// PrintGenes : Print the genes of the Neo in hex format
 func PrintGenes(id int) error {
 	if id > Program.NumberOfNeos || id < 1 {
 		return fmt.Errorf("PrintGenes id '%d' is out of bounds", id)
@@ -21,6 +22,7 @@ func PrintGenes(id int) error {
 	return nil
 }
 
+// PrintIO : Prints the Neos Iinput and Output slices.
 func PrintIO(id int) error {
 	if id > Program.NumberOfNeos || id < 1 {
 		return fmt.Errorf("PrintIO id '%d' is out of bounds", id)
@@ -37,6 +39,7 @@ func PrintIO(id int) error {
 	return nil
 }
 
+// PrintNeuron : Prints the Neos Neurons. Just a dump of the slice.
 func PrintNeuron(id int) error {
 	if id > Program.NumberOfNeos || id < 1 {
 		return fmt.Errorf("PrintGenes id '%d' is out of bounds", id)
@@ -48,6 +51,7 @@ func PrintNeuron(id int) error {
 	return nil
 }
 
+// PrintNet : Print the Neo's net list.
 func PrintNet(id int) error {
 	if id > Program.NumberOfNeos || id < 1 {
 		return fmt.Errorf("PrintNet id '%d' is out of bounds", id)
@@ -69,7 +73,7 @@ func PrintNet(id int) error {
 			case 3:
 				s1 = "pNS"
 			case 4:
-				s1 = "pWE"
+				s1 = "pES"
 			case 5:
 				s1 = "dsF"
 			case 6:

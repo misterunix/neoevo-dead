@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math"
 )
@@ -21,7 +22,7 @@ func PlaceFood() {
 	}
 }
 
-// Step1 : cycle through all Neos and fill the inputs
+// Step1 : Fill in all the inputs from the environment.
 func Step0(i int) {
 
 	fWorldY := float64(Program.WorldY)
@@ -31,32 +32,47 @@ func Step0(i int) {
 	fCurrentStep := float64(CurrentStep)
 	fNumberOfSteps := float64(Program.NumberOfSteps)
 
-	distanceFromNorth := fWorldY - nLocY/fWorldY*2.0 - 1.0
-	distanceFromWest := fWorldX - nLocX/fWorldX*2.0 - 1.0
+	//distanceFromNorth := fWorldY - nLocY/fWorldY*2.0 - 1.0
+	//distanceFromWest := fWorldX - nLocX/fWorldX*2.0 - 1.0
+
+	distanceFromNorth := nLocY/fWorldY*2.0 - 1.0 // distanceFromNorth : Distance from the North wall. -1.0 to 1.0. -1 is full north, 1 is full south
+	distanceFromEast := nLocX/fWorldX*2.0 - 1.0  // distanceFromWest : Distace from the East Wall. -1.0 to 1.0. -1 is full east, 1 is full west
 
 	fMaxDist := float64(Program.MaxDistanceLook)
 
 	Neos[i].Inputs[0] = fCurrentStep / fNumberOfSteps
 	Neos[i].Inputs[3] = distanceFromNorth
-	Neos[i].Inputs[4] = distanceFromWest
+	Neos[i].Inputs[4] = distanceFromEast
 	Neos[i].Inputs[7] = float64(Neos[i].Hunger) / float64(Program.MaxHunger)
 
+	fmt.Println(i, fWorldX, nLocX, distanceFromEast)
+
 	// Blockage forward
-	// akin to raytracing, which I hate
-	// simple populate world array with items them step the direction
 	for indexS := 1; indexS < Program.MaxDistanceLook; indexS++ { // going to look to far at anlges but will fix at distance check
 
 		p := DirectionToStep(Neos[i].Direction)
 
-		var td float64 // td : temporary distance to a target
+		var td float64 // td : Temporary distance to a target.
 		tx := Neos[i].LocationX + (indexS * p.X)
 		ty := Neos[i].LocationY + (indexS * p.Y)
 
 		ftx := float64(tx)
 		fty := float64(ty)
 
-		// Check end of world
+		// Check for the end of world
 		if tx >= Program.WorldX || ty >= Program.WorldY || tx < 0 || ty < 0 {
+			if tx > Program.WorldX {
+				tx = Program.WorldX
+			}
+			if ty > Program.WorldY {
+				ty = Program.WorldY
+			}
+			if tx < 0 {
+				tx = 0
+			}
+			if ty < 0 {
+				ty = 0
+			}
 			td = GetDistance(nLocX, nLocY, ftx, fty)
 			if td > fMaxDist {
 				Neos[i].Inputs[8] = -1.0
@@ -87,8 +103,6 @@ func Step0(i int) {
 	}
 
 	// Blockage backwards
-	// akin to raytracing, which I hate
-	// simple populate world array with items them step the direction
 	for indexS := 1; indexS < Program.MaxDistanceLook; indexS++ { // going to look to far at anlges but will fix at distance check
 
 		db := Neos[i].Direction
@@ -100,7 +114,7 @@ func Step0(i int) {
 
 		p := DirectionToStep(db)
 
-		var td float64 // td : temporary distance to a target
+		var td float64 // td : Temporary distance to a target.
 		tx := Neos[i].LocationX + (indexS * p.X)
 		ty := Neos[i].LocationY + (indexS * p.Y)
 
@@ -109,6 +123,18 @@ func Step0(i int) {
 
 		// Check end of world
 		if tx >= Program.WorldX || ty >= Program.WorldY || tx < 0 || ty < 0 {
+			if tx > Program.WorldX {
+				tx = Program.WorldX
+			}
+			if ty > Program.WorldY {
+				ty = Program.WorldY
+			}
+			if tx < 0 {
+				tx = 0
+			}
+			if ty < 0 {
+				ty = 0
+			}
 			td = GetDistance(nLocX, nLocY, ftx, fty)
 			if td > fMaxDist {
 				Neos[i].Inputs[9] = -1.0
@@ -185,10 +211,11 @@ func Step0(i int) {
 
 }
 
-// Step1 : Move the Neo's inputs to the neurons
+// Step1 : Clear all neuron's inputs and move the Neo's env inputs to the neurons.
 func Step1(i int) {
 
 	for j, n := range Neos[i].Neurons {
+		Neos[i].Neurons[j].InValue = 0.0
 		if n.SourceLayer == 0 {
 			Neos[i].Neurons[j].InValue = Neos[i].Inputs[n.Source]
 		}
@@ -196,14 +223,14 @@ func Step1(i int) {
 
 }
 
-// Step2 : Propigate out to in and sum and pass through tanh.
+// Step2 : Propagate out to in and sum and pass through Tanh.
 func Step2(i int) {
 
 	if i > Program.NumberOfNeos || i < 1 {
 		log.Fatalf("Step2 id '%d' is out of bounds", i)
 	}
 
-	for j := 0; j < Program.NumberOfLayers-1; j++ { // Layer by Layer
+	for j := 0; j < Program.NumberOfLayers-1; j++ { // Layer by Layer - why -1 ?
 
 		for k, m := range Neos[i].Neurons { // Loop through the Neurons
 
@@ -230,7 +257,12 @@ func Step2(i int) {
 		if j != 0 {
 			for k, m := range Neos[i].Neurons {
 				if m.SourceLayer == j {
-					Neos[i].Neurons[k].InValue = math.Tanh(m.InValue)
+					// shouldnt this be outvalue?
+					//Neos[i].Neurons[k].InValue = math.Tanh(m.InValue)
+					Neos[i].Neurons[k].OutValue = math.Tanh(m.InValue)
+				}
+				if m.OutLayer == Program.NumberOfLayers-1 { // put the output layer into the neo's output slilce.
+					Neos[i].Outputs[m.Out] = m.OutValue
 				}
 			}
 		}
@@ -238,22 +270,21 @@ func Step2(i int) {
 
 }
 
-func Step3() {
+// Step3 : Check if Neos died from hunger.
+func Step3(i int) {
 
-	for i := 1; i < Program.NumberOfNeos; i++ { // skip 0
-		// Check if Neo died from hunger
-		if Neos[i].Hunger == 0 {
-			Neos[i].Dead = true
-			continue
-		}
-		if Neos[i].Dead {
-			continue
-		}
-
+	if Neos[i].Dead {
+		return
 	}
 
+	// Check if Neo died from hunger
+	if Neos[i].Hunger == 0 {
+		Neos[i].Dead = true
+		return
+	}
 }
 
+// Step4 : Do movement
 func Step4(i int) {
 
 	var sX float64
@@ -264,6 +295,7 @@ func Step4(i int) {
 
 }
 
+// probability : return true if random is less than p.
 func probability(p float64) bool {
 	if randFloat() <= math.Abs(p) {
 		return true

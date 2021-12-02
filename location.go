@@ -27,11 +27,12 @@ func GetAngle(x1, y1, x2, y2 float64) float64 {
 	return a
 }
 
-// Convert X,Y to index value for positioning in the world space
+// Convert X,Y to index value for positioning in the world space.
 func XYtoIndex(x, y int) int {
 	return y*Program.WorldX + x
 }
 
+// IndexToXY : Convert the index into X,Y for the world space.
 func IndexToXY(i int) Point {
 	p := Point{
 		Y: i / Program.WorldX,
