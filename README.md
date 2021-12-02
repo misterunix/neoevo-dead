@@ -1,8 +1,25 @@
 # neoevo
-Experiment in machine learning and genetic evolution.
+An experiment in machine learning and genetic evolution.
+
+Sometime in Oct-2021 I ran across [David R. Miller's](https://github.com/davidrmiller) video on [youtube](https://www.youtube.com/watch?v=N3tRFayqVtk). _If you haven't_ watched it I highly encourage you to do so. 
+
+Having never worked on anything related to machine learning, this really got me excited and I just had to try. 
+
+I didn't want to copy his code but I did use it as an imperation. The only exception is the igraph python script. 
+
+I believe the forward propagation step is finished but needs to be tested more. **So at the moment there is nothing to see**.
 
 
-## timming
+
+
+## Notes while working on the code
+
+Below is a bunch of notes on things I run into. Expect things to come and go from here.
+
+
+### timming
+
+3000 Neos with 16 neurons and 3 layers.
 
 Turns out that Step2 is not the hog. Step0 is
 - Step0: 349.411068ms
@@ -10,7 +27,7 @@ Turns out that Step2 is not the hog. Step0 is
 - Step2: 8.858252ms
 - Time: 1m46.602564818s
 
-Changing all the floats to single call didnt help
+Changing all the floats to single call didn't help
 - Step0: 343.755265ms
 - Step1: 639.638µs
 - Step2: 9.01311ms
@@ -26,6 +43,7 @@ Removed all the prints
 - Time: 50.071533061s
 - 382% cpu
 
+### What a nightmare. Nothing worked here.
 
 Using the wg method
 
@@ -45,8 +63,10 @@ Using the wg method
 ## Documentaion
 gomarkdoc -u > DEVDOC.md
 
-
 ## Gene Decode
+
+[David's](https://github.com/davidrmiller) idea of encoding the genome in a 32 bit integer was per genius. I used his example to design my own. 
+
 Genes are 32 bit Integers stored in each Neo's struct. 
   - bits 
     - 0 - 15 Weight on input
@@ -139,7 +159,7 @@ Genes are 32 bit Integers stored in each Neo's struct.
 
 
 ### Movement rule
-Working off the back of the the genius that is [Steve Miller](https://github.com/davidrmiller). His idea of movement far exceeds over my own. I humbley adapt his movement idea to my sim. This is his concept and I state his copyright here. The below is copyright by [Steve Miller](https://github.com/davidrmiller) under the MIT License. 
+Working off the back of the genius that is [Steve Miller](https://github.com/davidrmiller). His idea of movement far exceeds my own. I humbly adapt his movement idea to my sim. This is his concept and I state his copyright here. The below is copyright by [Steve Miller](https://github.com/davidrmiller) under the MIT License. 
 
     // There are multiple action neurons for movement. Each type of movement neuron
     // urges the individual to move in some specific direction. We sum up all the

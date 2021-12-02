@@ -20,7 +20,7 @@ func main() {
 
 	Program.NumberOfNeos = 10
 	Program.NumberOfGenes = 4
-	Program.NumberOfNeurons = 12
+	Program.NumberOfNeurons = 4
 	Program.NumberOfLayers = 3
 
 	Program.NumberOfSteps = 300
@@ -91,24 +91,24 @@ func main() {
 		CurrentStep++
 
 	}
-	/*
-		for i := range Neos {
-			if i == 0 { // skip 0
-				continue
-			}
-			fmt.Println("Neo", i)
-			err := PrintGenes(i)
-			if err != nil {
-				log.Fatalln(err)
-			}
 
-			err = PrintNeuron(i)
-			//err = PrintNet(i)
-			if err != nil {
-				log.Fatalln(err)
-			}
+	for i := range Neos {
+		if i == 0 { // skip 0
+			continue
 		}
-	*/
+		fmt.Println("Neo", i)
+		err := PrintGenes(i)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		//err = PrintNeuron(i)
+		err = PrintNet(i)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+
 	fmt.Println("Time:", time.Since(start))
 }
 

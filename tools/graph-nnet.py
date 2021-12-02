@@ -1,16 +1,16 @@
 #!/usr/bin/python3
-
+# Copyright David Miller. Used under the MIT License. 
 import igraph
 
 # load data into a graph
 g = igraph.Graph.Read_Ncol('net.txt', names=True, weights=True)
 
 for v in g.vs:
-	v['size'] = 55
+	v['size'] = 35
 	v['label'] = v['name']
-	if v['name'] in ['Lx', 'Ly', 'EDx', 'EDy', 'ED', 'Bfd', 'Blr', 'Gen', 'LMx', 'LMy', 'LPf', 'LPb', 'Pop', 'Pfd', 'Plr', 'Osc', 'Age', 'Rnd', 'Sg', 'Sfd', 'Slr']:
+	if v['name'] in ['age','clF','clN','pNS','pES','dsF','dsN','Hgr','dFB','dBB']:
 		v['color'] = 'lightblue'
-	elif v['name'] in ['MvX', 'MvY', 'MvE', 'MvW', 'MvN', 'MvS', 'Mfd', 'MvL', 'MvR', 'MRL', 'Mrv', 'Mrn', 'OSC', 'LPD', 'Res', 'SG', 'Klf' ]:
+	elif v['name'] in ['mRD','mFW','mBK','tLF','tRT','mNT','mST','mWS','mES','NOP','mX','mY' ]:
 		v['color'] = 'lightpink'
 	else:
 		v['color'] = 'lightgrey'
@@ -68,4 +68,4 @@ else:
     bbox = (8000,8000)
     layout = 'fruchterman_reingold'
 
-igraph.plot(g, "net.svg", edge_curved=True, bbox=bbox, margin=64, layout=layout)
+igraph.plot(g, "net.png", edge_curved=True, bbox=bbox, margin=64, layout=layout)

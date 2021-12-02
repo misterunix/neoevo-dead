@@ -86,7 +86,7 @@ func PrintNet(id int) error {
 				s1 = "dBB"
 			}
 		} else {
-			s1 = fmt.Sprintf("N%02d-%02d", n.SourceLayer, n.Source)
+			s1 = fmt.Sprintf("%d-%d", n.SourceLayer, n.Source)
 		}
 
 		if n.OutLayer == Program.NumberOfLayers-1 {
@@ -117,7 +117,7 @@ func PrintNet(id int) error {
 				s2 = "mY"
 			}
 		} else {
-			s2 = fmt.Sprintf("N%02d-%02d", n.OutLayer, n.Out)
+			s2 = fmt.Sprintf("%d-%d", n.OutLayer, n.Out)
 		}
 		w1 := n.Weight * 8192
 		w := int(w1)
