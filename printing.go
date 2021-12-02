@@ -4,49 +4,125 @@ import (
 	"fmt"
 )
 
-func printgenes(id int) error {
-	if id < 0 || id >= BaseNeoCount {
-		return fmt.Errorf("printgenes id '%d' is out of bounds", id)
+// PrintGenes : Print the genes of the Neo in hex format
+func PrintGenes(id int) error {
+	if id > Program.NumberOfNeos || id < 1 {
+		return fmt.Errorf("PrintGenes id '%d' is out of bounds", id)
 	}
-
-	fmt.Printf("Neo %d\n", id)
-	s := 0
-	for _, g := range Neo[id].Genes {
-		fmt.Printf("%08X ", g)
-		s++
-		if s == 8 {
+	//fmt.Println("Printing genes.")
+	var w int
+	for i := 0; i < Program.NumberOfGenes; i++ {
+		w++
+		fmt.Printf("%08X ", Neos[id].Genes[i])
+		if w == 8 {
 			fmt.Println()
-			s = 0
 		}
 	}
 	fmt.Println()
-
 	return nil
 }
 
-func printneurons(id int) error {
-	if id < 0 || id >= BaseNeoCount {
-		return fmt.Errorf("printneurons id '%d' is out of bounds", id)
+// PrintIO : Prints the Neos Iinput and Output slices.
+func PrintIO(id int) error {
+	if id > Program.NumberOfNeos || id < 1 {
+		return fmt.Errorf("PrintIO id '%d' is out of bounds", id)
 	}
-
-	for _, n := range Neo[id].Neurons {
-		var h1, h2 string
-
-		if n.SrcFlag {
-			h1 = "h"
-		} else {
-			h1 = "i"
-		}
-
-		if !n.SnkFlag {
-			h2 = "h"
-		} else {
-			h2 = "o"
-		}
-
-		fmt.Printf("id:%d src:%d%s snk:%d%s InV:%2.7f OutV:%2.7f wgt:%2.7f Oinx:%d\n", n.ID, n.Source, h1, n.Sink, h2, n.InValue, n.OutValue, n.Weight, n.OutIndex)
+	fmt.Println("Neo", id)
+	for i := 0; i < Program.NumberOfInputs; i++ {
+		fmt.Printf("%5.3f ", Neos[id].Inputs[i])
 	}
 	fmt.Println()
+	for i := 0; i < Program.NumberOfOutputs; i++ {
+		fmt.Printf("%5.3f ", Neos[id].Outputs[i])
+	}
+	fmt.Println()
+	return nil
+}
 
+// PrintNeuron : Prints the Neos Neurons. Just a dump of the slice.
+func PrintNeuron(id int) error {
+	if id > Program.NumberOfNeos || id < 1 {
+		return fmt.Errorf("PrintGenes id '%d' is out of bounds", id)
+	}
+
+	for _, n := range Neos[id].Neurons {
+		fmt.Printf("%+v \n", n)
+	}
+	return nil
+}
+
+// PrintNet : Print the Neo's net list.
+func PrintNet(id int) error {
+	if id > Program.NumberOfNeos || id < 1 {
+		return fmt.Errorf("PrintNet id '%d' is out of bounds", id)
+	}
+
+	for _, n := range Neos[id].Neurons {
+
+		var s1 string
+		var s2 string
+
+		if n.SourceLayer == 0 {
+			switch n.Source {
+			case 0:
+				s1 = "age"
+			case 1:
+				s1 = "clF"
+			case 2:
+				s1 = "clN"
+			case 3:
+				s1 = "pNS"
+			case 4:
+				s1 = "pES"
+			case 5:
+				s1 = "dsF"
+			case 6:
+				s1 = "dsN"
+			case 7:
+				s1 = "Hgr"
+			case 8:
+				s1 = "dFB"
+			case 9:
+				s1 = "dBB"
+			}
+		} else {
+			s1 = fmt.Sprintf("N%02d-%02d", n.SourceLayer, n.Source)
+		}
+
+		if n.OutLayer == Program.NumberOfLayers-1 {
+			switch n.Out {
+			case 0:
+				s2 = "mRD"
+			case 1:
+				s2 = "mFW"
+			case 2:
+				s2 = "mBK"
+			case 3:
+				s2 = "tLF"
+			case 4:
+				s2 = "tRT"
+			case 5:
+				s2 = "mNT"
+			case 6:
+				s2 = "mST"
+			case 7:
+				s2 = "mWS"
+			case 8:
+				s2 = "mES"
+			case 9:
+				s2 = "NOP"
+			case 10:
+				s2 = "mX"
+			case 11:
+				s2 = "mY"
+			}
+		} else {
+			s2 = fmt.Sprintf("N%02d-%02d", n.OutLayer, n.Out)
+		}
+		w1 := n.Weight * 8192
+		w := int(w1)
+
+		fmt.Printf("%s %s %d\n", s1, s2, w)
+	}
 	return nil
 }

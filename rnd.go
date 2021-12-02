@@ -7,6 +7,7 @@ import (
 	"crypto/rand"
 )
 
+// randFloat : returns a positive float from 0 to 1
 func randFloat() float64 {
 	nBig, err := rand.Int(rand.Reader, big.NewInt(1000000))
 	if err != nil {
@@ -28,6 +29,7 @@ func randFloatFullValue() float64 {
 	return r
 }
 
+// randInt : returns a integer that is between 0 and max.
 func randInt(max int) int {
 	t := int64(max)
 	nBig, err := rand.Int(rand.Reader, big.NewInt(t))
