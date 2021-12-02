@@ -16,11 +16,11 @@ func main() {
 	//flag.Parse()
 
 	Program.NumberOfInputs = 10
-	Program.NumberOfOutputs = 10
+	Program.NumberOfOutputs = 12
 
-	Program.NumberOfNeos = 1000
+	Program.NumberOfNeos = 10
 	Program.NumberOfGenes = 16
-	Program.NumberOfNeurons = 32
+	Program.NumberOfNeurons = 12
 	Program.NumberOfLayers = 3
 
 	Program.NumberOfSteps = 300
@@ -80,12 +80,15 @@ func main() {
 		}
 		p2.Run()
 
+		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
+			PrintIO(ni)
+		}
+
 		createpng(count)
 
 		CurrentStep++
 
 	}
-
 	/*
 		for i := range Neos {
 			if i == 0 { // skip 0
@@ -97,8 +100,8 @@ func main() {
 				log.Fatalln(err)
 			}
 
-			//err = PrintNeuron(i)
-			err = PrintNet(i)
+			err = PrintNeuron(i)
+			//err = PrintNet(i)
 			if err != nil {
 				log.Fatalln(err)
 			}

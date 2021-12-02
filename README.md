@@ -123,11 +123,16 @@ Genes are 32 bit Integers stored in each Neo's struct.
   - mWS
 - 08 
   - Move East
+  - mES
 - 09
   - Do Nothing
   - NOP
-
-
+- 10 
+  - Move X +-
+  - mX
+- 11
+  - Move Y +-
+  - mY
 
 
 

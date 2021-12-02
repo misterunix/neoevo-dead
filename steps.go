@@ -254,6 +254,16 @@ func Step3() {
 
 }
 
+func Step4(i int) {
+
+	var sX float64
+	var sY float64
+
+	sX += Neos[i].Outputs[7]
+	sY += Neos[i].Outputs[6]
+
+}
+
 func probability(p float64) bool {
 	if randFloat() <= math.Abs(p) {
 		return true

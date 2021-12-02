@@ -21,6 +21,22 @@ func PrintGenes(id int) error {
 	return nil
 }
 
+func PrintIO(id int) error {
+	if id > Program.NumberOfNeos || id < 1 {
+		return fmt.Errorf("PrintIO id '%d' is out of bounds", id)
+	}
+	fmt.Println("Neo", id)
+	for i := 0; i < Program.NumberOfInputs; i++ {
+		fmt.Printf("%5.3f ", Neos[id].Inputs[i])
+	}
+	fmt.Println()
+	for i := 0; i < Program.NumberOfOutputs; i++ {
+		fmt.Printf("%5.3f ", Neos[id].Outputs[i])
+	}
+	fmt.Println()
+	return nil
+}
+
 func PrintNeuron(id int) error {
 	if id > Program.NumberOfNeos || id < 1 {
 		return fmt.Errorf("PrintGenes id '%d' is out of bounds", id)
@@ -38,8 +54,10 @@ func PrintNet(id int) error {
 	}
 
 	for _, n := range Neos[id].Neurons {
+
 		var s1 string
 		var s2 string
+
 		if n.SourceLayer == 0 {
 			switch n.Source {
 			case 0:
@@ -68,7 +86,32 @@ func PrintNet(id int) error {
 		}
 
 		if n.OutLayer == Program.NumberOfLayers-1 {
-			s2 = fmt.Sprintf("O-%02d", n.Out)
+			switch n.Out {
+			case 0:
+				s2 = "mRD"
+			case 1:
+				s2 = "mFW"
+			case 2:
+				s2 = "mBK"
+			case 3:
+				s2 = "tLF"
+			case 4:
+				s2 = "tRT"
+			case 5:
+				s2 = "mNT"
+			case 6:
+				s2 = "mST"
+			case 7:
+				s2 = "mWS"
+			case 8:
+				s2 = "mES"
+			case 9:
+				s2 = "NOP"
+			case 10:
+				s2 = "mX"
+			case 11:
+				s2 = "mY"
+			}
 		} else {
 			s2 = fmt.Sprintf("N%02d-%02d", n.OutLayer, n.Out)
 		}
