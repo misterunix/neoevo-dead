@@ -53,8 +53,6 @@ Using the wg method
   - 1m47.457s
 - time ./neoevo -threads 10
   - 1m45.733s
-- time ./neoevo -threads 20
-  - 
 - time ./neoevo -threads 50
   - 1m45.598s
 - time ./neoevo -threads 100
