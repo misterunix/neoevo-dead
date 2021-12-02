@@ -12,12 +12,8 @@ import (
 func main() {
 
 	//var numberOfThreads int
-
 	//flag.IntVar(&numberOfThreads, "threads", 2, "Number of threads to use.")
-
 	//flag.Parse()
-
-	// buffers = make(chan bool, numberOfThreads)
 
 	Program.NumberOfInputs = 10
 	Program.NumberOfOutputs = 10
@@ -50,9 +46,6 @@ func main() {
 	fmt.Println("Goroutines", sr.Goroutines)
 	fmt.Println("PID", sr.PID)
 
-	//runtime.GOMAXPROCS(10)
-	//fmt.Println(runtime.GOMAXPROCS(10))
-
 	start := time.Now()
 
 	for i := 0; i < Program.WorldSize; i++ {
@@ -65,49 +58,32 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// PutNeosInWorld()
-
 	for count := 0; count < Program.NumberOfSteps; count++ {
-		//ti := time.Now()
+
 		p0 := parallel.NewParallel()
 		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
 			p0.Register(Step0, ni).SetReceivers()
 		}
 		p0.Run()
-		//fmt.Println("Step0:", time.Since(ti))
 
-		//ti = time.Now()
 		p1 := parallel.NewParallel()
 		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
 			p1.Register(Step1, ni).SetReceivers()
 		}
 		p1.Run()
-		//	fmt.Println("Step1:", time.Since(ti))
 
-		//fmt.Println("Loop Count:", count)
-
-		//	ti = time.Now()
 		p2 := parallel.NewParallel()
-		//var wg sync.WaitGroup
 		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
-			//wg.Add(1)
-			//go Step2(ni, &wg)
+
 			p2.Register(Step2, ni).SetReceivers()
-			//go Step2(ni+1, &wg)
-			//fmt.Println("Len:", len(buffers), cap(buffers))
+
 		}
 		p2.Run()
-		//	fmt.Println("Step2:", time.Since(ti))
-		//fmt.Println("len:", len(buffers), cap(buffers))
-		//sr.GetGo()
-		//fmt.Println("Goroutines", sr.Goroutines)
-		//wg.Wait()
 
 		createpng(count)
-		//	os.Exit(0)
+
 		CurrentStep++
 
-		//fmt.Println(CurrentStep)
 	}
 
 	/*
@@ -133,7 +109,6 @@ func main() {
 
 func PutNeosInWorld() error {
 
-	//ugg := 0
 	for i := 1; i <= Program.NumberOfNeos; i++ {
 		stupidCount := 0
 
@@ -156,7 +131,7 @@ func PutNeosInWorld() error {
 		}
 
 	}
-	//fmt.Println(ugg)
+
 	return nil
 }
 

@@ -23,11 +23,7 @@ func PlaceFood() {
 
 // Step1 : cycle through all Neos and fill the inputs
 func Step0(i int) {
-	//start := time.Now()
-	//for i := range Neos {
-	//	if i == 0 { // start with 1
-	//continue
-	//}
+
 	fWorldY := float64(Program.WorldY)
 	fWorldX := float64(Program.WorldX)
 	nLocX := float64(Neos[i].LocationX)
@@ -64,7 +60,6 @@ func Step0(i int) {
 			td = GetDistance(nLocX, nLocY, ftx, fty)
 			if td > fMaxDist {
 				Neos[i].Inputs[8] = -1.0
-				//fmt.Println("Should break", tx, ty)
 				break
 			}
 			Neos[i].Inputs[8] = td
@@ -188,38 +183,25 @@ func Step0(i int) {
 		Neos[i].Inputs[2] = -1.0
 	}
 
-	//fmt.Println("Step0:", time.Since(start))
 }
 
 // Step1 : Move the Neo's inputs to the neurons
 func Step1(i int) {
-	//start := time.Now()
-	//for i := range Neos {
-	//if i == 0 { // Skip 0
-	//continue
-	//}
+
 	for j, n := range Neos[i].Neurons {
 		if n.SourceLayer == 0 {
 			Neos[i].Neurons[j].InValue = Neos[i].Inputs[n.Source]
 		}
 	}
-	//}
-	//	fmt.Println("Step1:", time.Since(start))
+
 }
 
 // Step2 : Propigate out to in and sum and pass through tanh.
 func Step2(i int) {
 
-	//buffers <- true
-
-	//fmt.Println("Len inside of Step2", len(buffers))
-
 	if i > Program.NumberOfNeos || i < 1 {
 		log.Fatalf("Step2 id '%d' is out of bounds", i)
 	}
-	//start := time.Now()
-
-	//defer wg.Done()
 
 	for j := 0; j < Program.NumberOfLayers-1; j++ { // Layer by Layer
 
@@ -254,13 +236,10 @@ func Step2(i int) {
 		}
 	}
 
-	//<-buffers
-	//wg.Done()
-	//fmt.Println("Step2:", time.Since(start))
 }
 
 func Step3() {
-	//start := time.Now()
+
 	for i := 1; i < Program.NumberOfNeos; i++ { // skip 0
 		// Check if Neo died from hunger
 		if Neos[i].Hunger == 0 {
@@ -271,9 +250,8 @@ func Step3() {
 			continue
 		}
 
-		// Moves
 	}
-	//fmt.Println("Step3:", time.Since(start))
+
 }
 
 func probability(p float64) bool {

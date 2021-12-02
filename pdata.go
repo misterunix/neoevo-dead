@@ -63,5 +63,3 @@ var WorldTmp []int // WorldTmp : Update to world. Copy back to World when done.
 var Food []Point // Food in the world
 
 var CurrentStep int
-
-//var buffers chan bool

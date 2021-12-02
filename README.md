@@ -2,10 +2,6 @@
 Experiment in machine learning and genetic evolution.
 
 
-
-# neoevo
-
-
 ## timming
 
 Turns out that Step2 is not the hog. Step0 is
