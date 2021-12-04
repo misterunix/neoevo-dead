@@ -20,7 +20,7 @@ func main() {
 
 	Program.NumberOfNeos = 10
 	Program.NumberOfGenes = 4
-	Program.NumberOfNeurons = 4
+	Program.NumberOfNeurons = 6
 	Program.NumberOfLayers = 3
 
 	Program.NumberOfSteps = 300
@@ -81,12 +81,26 @@ func main() {
 		}
 		p2.Run()
 
-		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
-			PrintIO(ni)
-			PrintNeuron(ni)
-		}
+		/*
+			for ni := 1; ni <= Program.NumberOfNeos; ni++ {
+				PrintIO(ni)
+				PrintNeuron(ni)
+			}
+		*/
 
-		createpng(count)
+		// Turn of for now
+		// createpng(count)
+
+		//for ni := 1; ni <= Program.NumberOfNeos; ni++ {
+		//		PrintIO(ni)
+		//		}
+
+		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
+			err = PrintIO(ni)
+			if err != nil {
+				log.Fatalln(err)
+			}
+		}
 
 		CurrentStep++
 
@@ -102,7 +116,10 @@ func main() {
 			log.Fatalln(err)
 		}
 
-		//err = PrintNeuron(i)
+		err = PrintNeuron(i)
+		if err != nil {
+			log.Fatalln(err)
+		}
 		err = PrintNet(i)
 		if err != nil {
 			log.Fatalln(err)
@@ -126,6 +143,7 @@ func PutNeosInWorld() error {
 				World[XYtoIndex(x, y)] = i
 				Neos[i].LocationX = x
 				Neos[i].LocationY = y
+				//fmt.Println(x, y, World[XYtoIndex(x, y)])
 				//ugg++
 				break
 			}

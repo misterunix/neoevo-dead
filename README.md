@@ -17,6 +17,8 @@ I believe the forward propagation step is finished but needs to be tested more. 
 Below is a bunch of notes on things I run into. Expect things to come and go from here.
 
 
+## Redo? Neuron management getting to be a pain. Need something better.
+
 ### timming
 
 3000 Neos with 16 neurons and 3 layers.
@@ -42,6 +44,20 @@ Converting Step0,1,2 all to Parallel
 Removed all the prints
 - Time: 50.071533061s
 - 382% cpu
+
+### Pixel vs Circle
+- No output nose activations. 
+- 1000 Neos at 300 steps
+- Pixel
+  - 14.27487967s
+- Circle
+  - 18.408099491s
+
+
+
+
+
+
 
 ### What a nightmare. Nothing worked here.
 

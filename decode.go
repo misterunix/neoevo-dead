@@ -132,5 +132,24 @@ func buildGenes(id int) error {
 		}
 	}
 
+	buildForwardLinks(id)
+
 	return nil
+}
+
+func buildForwardLinks(id int) {
+
+	for i, n1 := range Neos[id].Neurons {
+		Neos[id].Neurons[i].LinkForward = -1
+		for j, n2 := range Neos[id].Neurons {
+
+			if j == i {
+				continue
+			}
+
+			if n2.SourceLayer == n1.OutLayer && n2.Source == n1.Out {
+				Neos[id].Neurons[i].LinkForward = j
+			}
+		}
+	}
 }

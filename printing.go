@@ -46,7 +46,7 @@ func PrintNeuron(id int) error {
 	}
 
 	for _, n := range Neos[id].Neurons {
-		fmt.Printf("%+v \n", n)
+		fmt.Printf("NEO %d %+v \n", id, n)
 	}
 	return nil
 }

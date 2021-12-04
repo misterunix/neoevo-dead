@@ -32,6 +32,7 @@ type Neuron struct {
 	Source      int     // Source : The neuron's Source ID
 	OutLayer    int     // OutLayer : The neuron's output layer
 	Out         int     // Out : // The neuron's Out ID
+	LinkForward int
 }
 
 // Neo : Struct that contains all the information for a Neo.
