@@ -1,13 +1,15 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
+	"os"
 	"time"
-
-	"github.com/misterunix/parallel"
-	"github.com/misterunix/sniffle/systemcpu"
 )
+
+// Starting over 12-03-2021
+// Goal, small steps
 
 func main() {
 
@@ -15,38 +17,63 @@ func main() {
 	//flag.IntVar(&numberOfThreads, "threads", 2, "Number of threads to use.")
 	//flag.Parse()
 
-	Program.NumberOfInputs = 10
-	Program.NumberOfOutputs = 12
+	//Program.NumberOfInputs = INPUTCOUNT
+	//Program.NumberOfOutputs = OUTPUTCOUNT
+	var fcd int
+	flag.IntVar(&Program.NumberOfNeos, "neos", 1000, "Number of Neos.")
+	flag.IntVar(&Program.NumberOfGenes, "genes", 4, "Number of genes.")
+	flag.IntVar(&Program.NumberOfLayers, "layers", 1, "Number of hidden layers.")
+	flag.IntVar(&Program.NumberOfNeurons, "neurons", 3, "Number of neurons in hidden layers.")
+	flag.IntVar(&Program.NumberOfSteps, "steps", 300, "Number of steps per generation.")
+	flag.IntVar(&Program.NumberOfGenerations, "generations", 100, "Number of generations per simulation.")
+	flag.Float64Var(&Program.Mutaions, "mutation", 0.001, "Frequecy of mutations. 0.0 to 1.0.")
+	flag.IntVar(&Program.WorldX, "x", 128, "World Size in X. Image size will be 5x this amount.")
+	flag.IntVar(&Program.WorldX, "y", 128, "World Size in Y. Image size will be 5x this amount.")
+	flag.IntVar(&Program.MaxDistLook, "maxdist", 30, "Maximum distance a Neo can detect out to.")
+	flag.IntVar(&Program.MaxHunger, "hunger", 30, "Maximum hunger.")
+	flag.IntVar(&fcd, "food", 4, "Divisor for Number of Neos to food.")
+	flag.Parse()
 
-	Program.NumberOfNeos = 10
-	Program.NumberOfGenes = 4
-	Program.NumberOfNeurons = 6
-	Program.NumberOfLayers = 3
+	Program.NumberOfNeos = Program.NumberOfNeos + 1 // Index starts at 1, so increase count
 
-	Program.NumberOfSteps = 300
+	if Program.NumberOfGenes < 4 {
+		Program.NumberOfGenes = 4
+	}
+	if Program.NumberOfGenes > 255 {
+		Program.NumberOfGenes = 255
+	} // WOW
 
-	Program.WorldX = 128
-	Program.WorldY = 128
+	if Program.NumberOfLayers == 0 {
+		Program.NumberOfNeurons = INPUTCOUNT + OUTPUTCOUNT
+	} else {
+		Program.NumberOfNeurons = INPUTCOUNT + OUTPUTCOUNT + (Program.NumberOfLayers * Program.NumberOfNeurons)
+	}
+
+	Program.FworldX = float64(Program.WorldX)
+	Program.FworldY = float64(Program.WorldY)
 	Program.WorldSize = Program.WorldX * Program.WorldY
+
 	World = make([]int, Program.WorldSize)
 	WorldTmp = make([]int, Program.WorldSize)
 
-	Program.MaxDistanceLook = 30
-	Program.FoodCount = Program.NumberOfNeos / 4
-	Program.MaxHunger = 30
+	Program.FMaxDistLook = float64(Program.MaxDistLook)
 
-	sr := systemcpu.SysRun{}
+	if fcd == 0 || fcd > Program.NumberOfNeos {
+		fmt.Println("Food count devisor out of bounds.")
+		os.Exit(-1)
+	}
 
-	sr.Update()
+	Program.FoodCount = Program.NumberOfNeos / fcd
 
-	fmt.Println("CPUCount", sr.CPUCount)
-	fmt.Println("Architecture", sr.Architecture)
-	fmt.Println("OS", sr.OS)
-	fmt.Println("GoVersion", sr.GoVersion)
-	fmt.Println("Goroutines", sr.Goroutines)
-	fmt.Println("PID", sr.PID)
+	Neos = make([]Neo, Program.NumberOfNeos)
+	for i := 1; i < Program.NumberOfNeos; i++ {
+		Neos[i].Neurons = make([]Neuron, Program.NumberOfNeurons)
+		Neos[i].Genes = make([]uint32, Program.NumberOfGenes)
+	}
 
-	start := time.Now() // Get the current time. Used for timming the execution of the sim.
+	startsim := time.Now() // Get the current time. Used for timming the execution of the sim.
+
+	clearworld() // Reset the world
 
 	// Clear the world slices.
 	for i := 0; i < Program.WorldSize; i++ {
@@ -54,130 +81,42 @@ func main() {
 		WorldTmp[i] = 0
 	}
 
-	err := initNeos()
+	err := gen0init()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	for count := 0; count < Program.NumberOfSteps; count++ {
+	fmt.Printf("Simulation run time: %v\n", time.Since(startsim))
 
-		p0 := parallel.NewParallel()
-		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
-			p0.Register(Step0, ni).SetReceivers()
-		}
-		p0.Run()
-
-		p1 := parallel.NewParallel()
-		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
-			p1.Register(Step1, ni).SetReceivers()
-		}
-		p1.Run()
-
-		p2 := parallel.NewParallel()
-		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
-
-			p2.Register(Step2, ni).SetReceivers()
-
-		}
-		p2.Run()
-
-		/*
-			for ni := 1; ni <= Program.NumberOfNeos; ni++ {
-				PrintIO(ni)
-				PrintNeuron(ni)
-			}
-		*/
-
-		// Turn of for now
-		// createpng(count)
-
-		//for ni := 1; ni <= Program.NumberOfNeos; ni++ {
-		//		PrintIO(ni)
-		//		}
-
-		for ni := 1; ni <= Program.NumberOfNeos; ni++ {
-			err = PrintIO(ni)
-			if err != nil {
-				log.Fatalln(err)
-			}
-		}
-
-		CurrentStep++
-
-	}
-
-	for i := range Neos {
-		if i == 0 { // skip 0
-			continue
-		}
-		fmt.Println("Neo", i)
-		err := PrintGenes(i)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		err = PrintNeuron(i)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		err = PrintNet(i)
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}
-
-	fmt.Println("Time:", time.Since(start))
 }
 
-func PutNeosInWorld() error {
+func gen0init() error {
 
-	for i := 1; i <= Program.NumberOfNeos; i++ {
-		stupidCount := 0
+	for i := 1; i < Program.NumberOfNeos; i++ {
 
-		for {
-
-			x := randInt(Program.WorldX)
-			y := randInt(Program.WorldY)
-
-			if World[XYtoIndex(x, y)] == 0 {
-				World[XYtoIndex(x, y)] = i
-				Neos[i].LocationX = x
-				Neos[i].LocationY = y
-				//fmt.Println(x, y, World[XYtoIndex(x, y)])
-				//ugg++
-				break
-			}
-			stupidCount++
-			if stupidCount == Program.WorldSize*4 {
-				return fmt.Errorf("PutNeosInWorld was not able to place all the Neos. Max count reached")
-			}
-		}
-
-	}
-
-	return nil
-}
-
-func initNeos() error {
-
-	Neos = make([]Neo, Program.NumberOfNeos+1)
-
-	err := PutNeosInWorld()
-	if err != nil {
-		return err
-	}
-
-	for i := 1; i <= Program.NumberOfNeos; i++ {
-
-		Neos[i].Neurons = make([]Neuron, 0)
-		Neos[i].Genes = make([]int, 0)
-		Neos[i].Inputs = make([]float64, Program.NumberOfInputs)
-		Neos[i].Outputs = make([]float64, Program.NumberOfOutputs)
-		Neos[i].Hunger = 0
+		var nid int // nid : Neuron ID
 		for j := 0; j < Program.NumberOfGenes; j++ {
-			buildGenes(i)
+
+			tempgene := uint32(randInt(0xFFFFFFFF))
+			Neos[i].Genes[j] = tempgene
+			neu := decode(tempgene)
+			neu.ID = nid
+			nid++
+
+		}
+
+		err := printgenes(i)
+		if err != nil {
+			return err
+		}
+
+		err = printneuron(i)
+		if err != nil {
+			return err
 		}
 
 	}
+
 	return nil
+
 }
