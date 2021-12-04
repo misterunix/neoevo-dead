@@ -4,6 +4,9 @@
 *.dll
 *.so
 *.dylib
+*.txt
+*.svg
+*.png
 
 # Test binary, built with `go test -c`
 *.test
@@ -13,11 +16,7 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-*.txt
-l
 
+# Unix binary 
 neoevo
 
-*.svg
-
-*.png

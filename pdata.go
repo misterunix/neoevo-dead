@@ -75,7 +75,7 @@ type PData struct {
 	NumberOfNeos        int // NumberOfNeos : Number of Neos per generation.
 	NumberOfGenes       int // NumberOfGenes : Number of genes in a Neo
 	NumberOfLayers      int // NumberOfLayers : Number of layers where 0 is input, MaxLayers-1 is output. Inbetween are hidden.
-	NumberOfNeurons     int // NumberOfNeurons : Number of Neurons per layer
+	NumberOfNeurons     int // NumberOfNeurons : Number of Neurons per hidden layer
 	NumberOfSteps       int // NumberOfSteps : Number of steps in this generation.
 	NumberOfGenerations int // NumberOfGenerations : Number of generations per simulation.
 

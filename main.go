@@ -34,6 +34,8 @@ func main() {
 	flag.IntVar(&fcd, "food", 4, "Divisor for Number of Neos to food.")
 	flag.Parse()
 
+	Program.NumberOfLayers = Program.NumberOfLayers + 2
+
 	Program.NumberOfNeos = Program.NumberOfNeos + 1 // Index starts at 1, so increase count
 
 	if Program.NumberOfGenes < 4 {
@@ -43,18 +45,16 @@ func main() {
 		Program.NumberOfGenes = 255
 	} // WOW
 
-	if Program.NumberOfLayers == 0 {
-		Program.NumberOfNeurons = INPUTCOUNT + OUTPUTCOUNT
-	} else {
-		Program.NumberOfNeurons = INPUTCOUNT + OUTPUTCOUNT + (Program.NumberOfLayers * Program.NumberOfNeurons)
+	if Program.NumberOfLayers == 2 {
+		Program.NumberOfNeurons = 0
 	}
+	//else {
+	//	Program.NumberOfNeurons = INPUTCOUNT + OUTPUTCOUNT + (Program.NumberOfLayers - 2*Program.NumberOfNeurons)
+	//}
 
 	Program.FworldX = float64(Program.WorldX)
 	Program.FworldY = float64(Program.WorldY)
 	Program.WorldSize = Program.WorldX * Program.WorldY
-
-	World = make([]int, Program.WorldSize)
-	WorldTmp = make([]int, Program.WorldSize)
 
 	Program.FMaxDistLook = float64(Program.MaxDistLook)
 
@@ -65,9 +65,14 @@ func main() {
 
 	Program.FoodCount = Program.NumberOfNeos / fcd
 
+	fmt.Printf("%+v\n", Program)
+
+	World = make([]int, Program.WorldSize)
+	WorldTmp = make([]int, Program.WorldSize)
+
 	Neos = make([]Neo, Program.NumberOfNeos)
 	for i := 1; i < Program.NumberOfNeos; i++ {
-		Neos[i].Neurons = make([]Neuron, Program.NumberOfNeurons)
+		//Neos[i].Neurons = make([]Neuron, Program.NumberOfNeurons)
 		Neos[i].Genes = make([]uint32, Program.NumberOfGenes)
 	}
 
@@ -97,13 +102,25 @@ func gen0init() error {
 		var nid int // nid : Neuron ID
 		for j := 0; j < Program.NumberOfGenes; j++ {
 
-			tempgene := uint32(randInt(0xFFFFFFFF))
+			var tempgene uint32
+			for {
+				tempgene = uint32(randInt(0xFFFFFFFF))
+				if checkgene(tempgene) {
+					break
+				}
+			}
+
 			Neos[i].Genes[j] = tempgene
 			neu := decode(tempgene)
 			neu.ID = nid
+
+			Neos[i].Neurons = append(Neos[i].Neurons, neu)
+
 			nid++
 
 		}
+
+		linkneurons(i)
 
 		err := printgenes(i)
 		if err != nil {

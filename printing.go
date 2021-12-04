@@ -26,8 +26,8 @@ func printneuron(id int) error {
 		return fmt.Errorf("printneuron id '%d' is out of bounds", id)
 	}
 
-	for _, n := range Neos[id].Neurons {
-		fmt.Printf("NEO %d %+v \n", id, n)
+	for i, n := range Neos[id].Neurons {
+		fmt.Printf("NEO %d Neuron %d %+v \n", id, i, n)
 	}
 	return nil
 }
