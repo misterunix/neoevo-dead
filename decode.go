@@ -4,6 +4,8 @@ import "fmt"
 
 func checkgene(gene uint32) bool {
 
+	//fmt.Printf("checkgene %08X\n", gene)
+
 	var src, dst uint32
 	var srcl, dstl uint32
 
@@ -16,9 +18,9 @@ func checkgene(gene uint32) bool {
 	}
 
 	// src layer can not be the output layer
-	//if srcl == uint32(Program.NumberOfLayers-1) {
-	//		return false
-	//}
+	if srcl == uint32(Program.NumberOfLayers-1) {
+		return false
+	}
 
 	// src layer cannot be more than dst layer (cant go backwards - at least for now.
 	if srcl > dstl {

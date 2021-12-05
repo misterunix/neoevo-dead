@@ -104,10 +104,6 @@ func gen0init() error {
 		Neos[i].Inputs = make([]float64, INPUTCOUNT)
 		Neos[i].Outputs = make([]float64, OUTPUTCOUNT)
 
-		//p := Point{}
-		//	p.X = randInt(128)
-		//	p.Y = randInt(128)
-
 		var nid int // nid : Neuron ID
 		for j := 0; j < Program.NumberOfGenes; j++ {
 
@@ -122,44 +118,17 @@ func gen0init() error {
 			Neos[i].Genes[j] = tempgene
 			neu := decode(tempgene)
 			neu.ID = nid
-			//neu.SourceLayer = 0
-			//neu.SourceID = 5
-			//	neu.OutLayer = 2
-			//neu.OutID = 0
-
-			/*
-				if j == Program.NumberOfGenes-1 {
-
-					neu.SourceLayer = 2
-					neu.SourceID = 0
-					neu.OutLayer = 2
-					neu.OutID = 0
-
-				}
-			*/
-			//fmt.Printf("-NEO %d Neuron %d %+v \n", i, neu.ID, neu)
 
 			Neos[i].Neurons = append(Neos[i].Neurons, neu)
-
-			//encode(neu)
 
 			nid++
 
 		}
+		//fmt.Println("-------")
+		//linkneurons(i)
+		//printneuron(i)
+		//fmt.Println("-------")
 
-		linkneurons(i)
-
-		/*
-			err := printgenes(i)
-			if err != nil {
-				return err
-			}
-
-			err = printneuron(i)
-			if err != nil {
-				return err
-			}
-		*/
 	}
 
 	return nil

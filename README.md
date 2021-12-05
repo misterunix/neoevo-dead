@@ -5,9 +5,9 @@ Sometime in Oct-2021 I ran across [David R. Miller's](https://github.com/davidrm
 
 Having never worked on anything related to machine learning, this really got me excited and I just had to try. 
 
-I didn't want to copy his code but I did use it as an imperation. The only exception is the igraph python script. 
+I didn't want to copy his code but I did use his comments as an imperation. The only exception is the igraph python script. That I did copy.
 
-I believe the forward propagation step is finished but needs to be tested more. **So at the moment there is nothing to see**.
+**So at the moment there is nothing to see**.
 
 
 
@@ -16,7 +16,12 @@ gomarkdoc -u > DEVDOC.md
 
 ## Gene Decode
 
-[David's](https://github.com/davidrmiller) idea of encoding the genome in a 32 bit integer was per genius. I used his example to design my own. 
+~~PP UU TT AA QQQQ~~
+~~UU Out Neuron~~
+~~TT In layer~~
+~~AA In Neuron~~
+~~QQQQ Weight 65535 : (X / 65535)*8-4 : -4.0 to +4.0~~
+
 
 Genes are 32 bit Integers stored in each Neo's struct. 
   - bits 

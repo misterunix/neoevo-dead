@@ -34,6 +34,29 @@ func forward1(id int) error {
 	Neos[id].Inputs[POSITIONNS] = ((Neos[id].Location.FY / Program.FworldY) * 2.0) - 1.0
 	Neos[id].Inputs[POSITIONWE] = ((Neos[id].Location.FX / Program.FworldX) * 2.0) - 1.0
 
+	ta := 0.0
+	td := 0.0
+	md := 1111111110.0
+	nid := 0
+
+	for _, k := range Neos {
+		td = GetDistance(Neos[id].Location.FX, Neos[id].Location.FY, k.Location.FX, k.Location.FY)
+		if td < md {
+			md = td
+			nid = k.ID
+		}
+	}
+
+	for _, k := range Neos {
+		if k.ID == nid {
+			ta = GetAngle(Neos[id].Location.FX, Neos[id].Location.FY, k.Location.FX, k.Location.FY)
+			break
+		}
+	}
+
+	Neos[id].Inputs[CLOSESTNEO] = ta
+	Neos[id].Inputs[DISTANCENEO] = md
+
 	return nil
 }
 
@@ -70,8 +93,8 @@ func forward3(id int) error {
 
 				if n.LinkForward >= 0 {
 					Neos[id].Neurons[n.LinkForward].InValue += (n.OutValue * n.Weight)
-					fmt.Println(Neos[id].Neurons[n.LinkForward].InValue)
-					fmt.Println(Neos[id].Neurons[n.LinkForward].InValue, n.OutValue, n.Weight)
+					//fmt.Println(Neos[id].Neurons[n.LinkForward].InValue)
+					//fmt.Println(Neos[id].Neurons[n.LinkForward].InValue, n.OutValue, n.Weight)
 				}
 				if n.LinkForward == -99 {
 					Neos[id].Outputs[n.OutID] += n.OutValue
