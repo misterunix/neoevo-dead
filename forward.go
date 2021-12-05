@@ -14,7 +14,7 @@ func forward0(id int) error {
 
 	for i := range Neos[id].Neurons {
 		Neos[id].Neurons[i].InValue = 0.0
-		Neos[id].Neurons[i].OutLayer = 0.0
+		Neos[id].Neurons[i].OutValue = 0.0
 	}
 
 	return nil
@@ -55,6 +55,7 @@ func forward2(id int) error {
 
 }
 
+// forward3 : propaget forward
 func forward3(id int) error {
 
 	if id < 1 || id > Program.NumberOfNeos {
@@ -76,9 +77,11 @@ func forward3(id int) error {
 		}
 
 		for i, n := range Neos[id].Neurons {
-
-			Neos[id].Neurons[i].OutValue = math.Tanh(n.InValue)
-
+			if n.SourceLayer == 0 {
+				Neos[id].Neurons[i].OutValue = n.InValue
+			} else {
+				Neos[id].Neurons[i].OutValue = math.Tanh(n.InValue)
+			}
 		}
 
 	}

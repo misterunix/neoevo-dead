@@ -65,7 +65,7 @@ func main() {
 
 	Program.FoodCount = Program.NumberOfNeos / fcd
 
-	//fmt.Printf("%+v\n", Program)
+	fmt.Printf("%+v\n", Program)
 
 	World = make([]int, Program.WorldSize)
 	WorldTmp = make([]int, Program.WorldSize)
@@ -104,9 +104,9 @@ func gen0init() error {
 		Neos[i].Inputs = make([]float64, INPUTCOUNT)
 		Neos[i].Outputs = make([]float64, OUTPUTCOUNT)
 
-		p := Point{}
-		p.X = randInt(128)
-		p.Y = randInt(128)
+		//p := Point{}
+		//	p.X = randInt(128)
+		//	p.Y = randInt(128)
 
 		var nid int // nid : Neuron ID
 		for j := 0; j < Program.NumberOfGenes; j++ {
@@ -123,7 +123,10 @@ func gen0init() error {
 			neu := decode(tempgene)
 			neu.ID = nid
 
+			//fmt.Printf("-NEO %d Neuron %d %+v \n", i, neu.ID, neu)
+
 			Neos[i].Neurons = append(Neos[i].Neurons, neu)
+
 			//encode(neu)
 
 			nid++

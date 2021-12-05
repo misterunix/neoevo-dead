@@ -8,7 +8,7 @@ func checkgene(gene uint32) bool {
 	var srcl, dstl uint32
 
 	srcl = ((gene & 0xE0000000) >> 29) % uint32(Program.NumberOfLayers)
-	dstl = (gene & 0x00E00000) >> 21 % uint32(Program.NumberOfLayers)
+	dstl = ((gene & 0x00E00000) >> 21) % uint32(Program.NumberOfLayers)
 
 	// dst layer can not be layer 0
 	if dstl == 0 {
@@ -16,7 +16,7 @@ func checkgene(gene uint32) bool {
 	}
 
 	// src layer can not be the output layer
-	if srcl == uint32(Program.NumberOfLayers)-1 {
+	if srcl == uint32(Program.NumberOfLayers-1) {
 		return false
 	}
 
@@ -25,29 +25,32 @@ func checkgene(gene uint32) bool {
 		return false
 	}
 
+	//fmt.Printf("srcl:%02d dstl:%02d\n", srcl, dstl)
+
 	if srcl == 0 {
 		src = ((gene & 0x1F000000) >> 24) % INPUTCOUNT
 	} else {
 		src = ((gene & 0x1F000000) >> 24) % uint32(Program.NumberOfNeurons)
 	}
 
-	if dstl == uint32(Program.NumberOfLayers)-1 {
-		dst = (gene & 0x001F0000) >> 16 % OUTPUTCOUNT
+	if dstl == uint32(Program.NumberOfLayers-1) {
+		dst = ((gene & 0x001F0000) >> 16) % OUTPUTCOUNT
 	} else {
-		dst = (gene & 0x001F0000) >> 16 % uint32(Program.NumberOfNeurons)
+		dst = ((gene & 0x001F0000) >> 16) % uint32(Program.NumberOfNeurons)
 	}
 
 	// no loops on same neuron
 	if srcl == dstl && src == dst {
 		return false
 	}
-
+	//fmt.Printf("srcl:%02d src:%02d dstl:%02d dst:%02d\n", srcl, src, dstl, dst)
 	return true
 }
 
 func decode(gene uint32) Neuron {
 
 	neu := Neuron{}
+
 	weightI := (gene & 0x0000FFFF)               // weightI : unsigned integer value of the weight
 	weight := (float64(weightI)/65535.0)*8 - 4.0 // weight : neurons weight -4.0 to +4.0
 
@@ -55,22 +58,39 @@ func decode(gene uint32) Neuron {
 	var srcl, dstl uint32
 
 	srcl = ((gene & 0xE0000000) >> 29) % uint32(Program.NumberOfLayers)
-	dstl = (gene & 0x00E00000) >> 21 % uint32(Program.NumberOfLayers)
+	dstl = ((gene & 0x00E00000) >> 21) % uint32(Program.NumberOfLayers)
 
 	if srcl == 0 {
 		src = ((gene & 0x1F000000) >> 24) % INPUTCOUNT
 	} else {
 		src = ((gene & 0x1F000000) >> 24) % uint32(Program.NumberOfNeurons)
-		//fmt.Printf("--src--- %d %d %d -----\n", srcl, src, Program.NumberOfNeurons)
 	}
 
-	if dstl == uint32(Program.NumberOfLayers)-1 {
-		dst = (gene & 0x001F0000) >> 16 % OUTPUTCOUNT
+	if dstl == uint32(Program.NumberOfLayers-1) {
+		dst = ((gene & 0x001F0000) >> 16) % OUTPUTCOUNT
 	} else {
-		dst = (gene & 0x001F0000) >> 16 % uint32(Program.NumberOfNeurons)
-		//fmt.Printf("--dst--- %d %d %d-----\n", dstl, dst, Program.NumberOfNeurons)
+		dst = ((gene & 0x001F0000) >> 16) % uint32(Program.NumberOfNeurons)
 	}
 
+	/*
+		srcl = ((gene & 0xE0000000) >> 29) % uint32(Program.NumberOfLayers)
+		dstl = ((gene & 0x00E00000) >> 21) % uint32(Program.NumberOfLayers)
+
+		if srcl == 0 {
+			src = ((gene & 0x1F000000) >> 24) % INPUTCOUNT
+		} else {
+			src = ((gene & 0x1F000000) >> 24) % uint32(Program.NumberOfNeurons)
+			//fmt.Printf("--src--- %d %d %d -----\n", srcl, src, Program.NumberOfNeurons)
+		}
+
+		if dstl == uint32(Program.NumberOfLayers-1) {
+			dst = ((gene & 0x001F0000) >> 16) % OUTPUTCOUNT
+		} else {
+			dst = ((gene & 0x001F0000) >> 16) % uint32(Program.NumberOfNeurons)
+			//fmt.Printf("--dst--- %d %d %d-----\n", dstl, dst, Program.NumberOfNeurons)
+		}
+	*/
+	//	fmt.Printf("srcl:%02d src:%02d dstl:%02d dst:%02d\n", srcl, src, dstl, dst)
 	neu.Weight = weight
 	neu.SourceID = int(src)
 	neu.SourceLayer = int(srcl)

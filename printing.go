@@ -27,7 +27,12 @@ func printneuron(id int) error {
 	}
 
 	for i, n := range Neos[id].Neurons {
+		//fmt.Printf("NEO %d Neuron %d ", id, i)
+		//fmt.Printf("ID:%d inv:%4.3f outv:%4.3f ", n.ID, n.InValue, n.OutValue)
+		//fmt.Printf("srcl:%02d src:%02d dstl:%02d dst:%02d ", n.SourceLayer, n.SourceID, n.OutLayer, n.OutID)
+		//	fmt.Printf("lf:%02d lb:%02d\n", n.LinkForward, n.LinkBackward)
 		fmt.Printf("NEO %d Neuron %d %+v \n", id, i, n)
 	}
+
 	return nil
 }
