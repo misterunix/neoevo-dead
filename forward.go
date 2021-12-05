@@ -46,7 +46,7 @@ func forward2(id int) error {
 
 	for i, n := range Neos[id].Neurons {
 		if n.SourceLayer == 0 {
-			Neos[id].Neurons[i].InValue = Neos[id].Inputs[n.SourceID]
+			Neos[id].Neurons[i].InValue = Neos[id].Inputs[n.SourceID] * n.Weight
 			Neos[id].Neurons[i].OutValue = Neos[id].Inputs[n.SourceID]
 		}
 	}
@@ -62,14 +62,19 @@ func forward3(id int) error {
 		return fmt.Errorf("linkneurons id `%d` out of bounds", id)
 	}
 
-	for l := 1; l < Program.NumberOfLayers; l++ {
+	for l := 0; l < Program.NumberOfLayers; l++ {
 
 		for _, n := range Neos[id].Neurons {
 
 			if n.SourceLayer == l {
 
 				if n.LinkForward >= 0 {
-					Neos[id].Neurons[n.LinkForward].InValue += n.OutValue * n.Weight
+					Neos[id].Neurons[n.LinkForward].InValue += (n.OutValue * n.Weight)
+					fmt.Println(Neos[id].Neurons[n.LinkForward].InValue)
+					fmt.Println(Neos[id].Neurons[n.LinkForward].InValue, n.OutValue, n.Weight)
+				}
+				if n.LinkForward == -99 {
+					Neos[id].Outputs[n.OutID] += n.OutValue
 				}
 
 			}
@@ -77,13 +82,34 @@ func forward3(id int) error {
 		}
 
 		for i, n := range Neos[id].Neurons {
+
 			if n.SourceLayer == 0 {
 				Neos[id].Neurons[i].OutValue = n.InValue
+			} else if n.SourceLayer == Program.NumberOfLayers-1 {
+				Neos[id].Outputs[n.OutID] = math.Tanh(Neos[id].Outputs[n.OutID])
 			} else {
 				Neos[id].Neurons[i].OutValue = math.Tanh(n.InValue)
 			}
+
 		}
 
+	}
+
+	return nil
+
+}
+
+// forward4 : move out neurons to neo output
+func forward4(id int) error {
+
+	if id < 1 || id > Program.NumberOfNeos {
+		return fmt.Errorf("linkneurons id `%d` out of bounds", id)
+	}
+
+	for _, n := range Neos[id].Neurons {
+		if n.OutLayer == Program.NumberOfLayers-1 {
+			Neos[id].Outputs[n.OutID] = n.InValue // math.Tanh(n.InValue * n.Weight)
+		}
 	}
 
 	return nil

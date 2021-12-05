@@ -50,7 +50,9 @@ func runsim() error {
 			for id := 1; id < Program.NumberOfNeos; id++ {
 				forward3(id)
 			}
-
+			for id := 1; id < Program.NumberOfNeos; id++ {
+				forward4(id)
+			}
 			/*
 
 				p0 := parallel.NewParallel()
@@ -76,6 +78,13 @@ func runsim() error {
 					p3.Register(forward3, id).SetReceivers()
 				}
 				p3.Run()
+
+				p4 := parallel.NewParallel()
+				for id := 1; id < Program.NumberOfNeos; id++ {
+					p3.Register(forward4, id).SetReceivers()
+				}
+				p4.Run()
+
 			*/
 			createpng(step)
 
@@ -84,6 +93,7 @@ func runsim() error {
 		for id := 1; id < Program.NumberOfNeos; id++ {
 			printgenes(id)
 			printneuron(id)
+			printio(id)
 		}
 	}
 

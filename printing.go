@@ -36,3 +36,20 @@ func printneuron(id int) error {
 
 	return nil
 }
+
+// printio : Prints the Neos Iinput and Output slices.
+func printio(id int) error {
+	if id > Program.NumberOfNeos || id < 1 {
+		return fmt.Errorf("PrintIO id '%d' is out of bounds", id)
+	}
+	fmt.Println("Neo", id)
+	for i := 0; i < INPUTCOUNT; i++ {
+		fmt.Printf("%5.3f ", Neos[id].Inputs[i])
+	}
+	fmt.Println()
+	for i := 0; i < OUTPUTCOUNT; i++ {
+		fmt.Printf("%5.3f ", Neos[id].Outputs[i])
+	}
+	fmt.Println()
+	return nil
+}

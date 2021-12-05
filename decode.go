@@ -16,9 +16,9 @@ func checkgene(gene uint32) bool {
 	}
 
 	// src layer can not be the output layer
-	if srcl == uint32(Program.NumberOfLayers-1) {
-		return false
-	}
+	//if srcl == uint32(Program.NumberOfLayers-1) {
+	//		return false
+	//}
 
 	// src layer cannot be more than dst layer (cant go backwards - at least for now.
 	if srcl > dstl {
@@ -40,8 +40,10 @@ func checkgene(gene uint32) bool {
 	}
 
 	// no loops on same neuron
-	if srcl == dstl && src == dst {
-		return false
+	if srcl != uint32(Program.NumberOfLayers)-1 {
+		if srcl == dstl && src == dst {
+			return false
+		}
 	}
 	//fmt.Printf("srcl:%02d src:%02d dstl:%02d dst:%02d\n", srcl, src, dstl, dst)
 	return true
@@ -109,11 +111,12 @@ func linkneurons(id int) error {
 
 	for i, n := range Neos[id].Neurons {
 
-		if n.OutLayer == Program.NumberOfLayers-1 {
-			Neos[id].Neurons[i].LinkForward = -99
-			continue
-		}
-
+		/*
+			if n.OutLayer == Program.NumberOfLayers-1 {
+				Neos[id].Neurons[i].LinkForward = -99
+				continue
+			}
+		*/
 		for j, k := range Neos[id].Neurons {
 
 			// Cant do itself. :)

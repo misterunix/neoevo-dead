@@ -122,7 +122,21 @@ func gen0init() error {
 			Neos[i].Genes[j] = tempgene
 			neu := decode(tempgene)
 			neu.ID = nid
+			//neu.SourceLayer = 0
+			//neu.SourceID = 5
+			//	neu.OutLayer = 2
+			//neu.OutID = 0
 
+			/*
+				if j == Program.NumberOfGenes-1 {
+
+					neu.SourceLayer = 2
+					neu.SourceID = 0
+					neu.OutLayer = 2
+					neu.OutID = 0
+
+				}
+			*/
 			//fmt.Printf("-NEO %d Neuron %d %+v \n", i, neu.ID, neu)
 
 			Neos[i].Neurons = append(Neos[i].Neurons, neu)
