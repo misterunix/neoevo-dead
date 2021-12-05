@@ -28,7 +28,7 @@ func main() {
 	flag.IntVar(&Program.NumberOfGenerations, "generations", 100, "Number of generations per simulation.")
 	flag.Float64Var(&Program.Mutaions, "mutation", 0.001, "Frequecy of mutations. 0.0 to 1.0.")
 	flag.IntVar(&Program.WorldX, "x", 128, "World Size in X. Image size will be 5x this amount.")
-	flag.IntVar(&Program.WorldX, "y", 128, "World Size in Y. Image size will be 5x this amount.")
+	flag.IntVar(&Program.WorldY, "y", 128, "World Size in Y. Image size will be 5x this amount.")
 	flag.IntVar(&Program.MaxDistLook, "maxdist", 30, "Maximum distance a Neo can detect out to.")
 	flag.IntVar(&Program.MaxHunger, "hunger", 30, "Maximum hunger.")
 	flag.IntVar(&fcd, "food", 4, "Divisor for Number of Neos to food.")
@@ -65,7 +65,7 @@ func main() {
 
 	Program.FoodCount = Program.NumberOfNeos / fcd
 
-	fmt.Printf("%+v\n", Program)
+	//fmt.Printf("%+v\n", Program)
 
 	World = make([]int, Program.WorldSize)
 	WorldTmp = make([]int, Program.WorldSize)
@@ -101,6 +101,13 @@ func gen0init() error {
 
 	for i := 1; i < Program.NumberOfNeos; i++ {
 
+		Neos[i].Inputs = make([]float64, INPUTCOUNT)
+		Neos[i].Outputs = make([]float64, OUTPUTCOUNT)
+
+		p := Point{}
+		p.X = randInt(128)
+		p.Y = randInt(128)
+
 		var nid int // nid : Neuron ID
 		for j := 0; j < Program.NumberOfGenes; j++ {
 
@@ -117,6 +124,7 @@ func gen0init() error {
 			neu.ID = nid
 
 			Neos[i].Neurons = append(Neos[i].Neurons, neu)
+			//encode(neu)
 
 			nid++
 
@@ -124,16 +132,17 @@ func gen0init() error {
 
 		linkneurons(i)
 
-		err := printgenes(i)
-		if err != nil {
-			return err
-		}
+		/*
+			err := printgenes(i)
+			if err != nil {
+				return err
+			}
 
-		err = printneuron(i)
-		if err != nil {
-			return err
-		}
-
+			err = printneuron(i)
+			if err != nil {
+				return err
+			}
+		*/
 	}
 
 	return nil

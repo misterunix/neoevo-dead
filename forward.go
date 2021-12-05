@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 // forward0 : Clear inputs.
 func forward0(id int) error {
@@ -44,7 +47,40 @@ func forward2(id int) error {
 	for i, n := range Neos[id].Neurons {
 		if n.SourceLayer == 0 {
 			Neos[id].Neurons[i].InValue = Neos[id].Inputs[n.SourceID]
+			Neos[id].Neurons[i].OutValue = Neos[id].Inputs[n.SourceID]
 		}
+	}
+
+	return nil
+
+}
+
+func forward3(id int) error {
+
+	if id < 1 || id > Program.NumberOfNeos {
+		return fmt.Errorf("linkneurons id `%d` out of bounds", id)
+	}
+
+	for l := 1; l < Program.NumberOfLayers; l++ {
+
+		for _, n := range Neos[id].Neurons {
+
+			if n.SourceLayer == l {
+
+				if n.LinkForward >= 0 {
+					Neos[id].Neurons[n.LinkForward].InValue += n.OutValue * n.Weight
+				}
+
+			}
+
+		}
+
+		for i, n := range Neos[id].Neurons {
+
+			Neos[id].Neurons[i].OutValue = math.Tanh(n.InValue)
+
+		}
+
 	}
 
 	return nil

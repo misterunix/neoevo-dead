@@ -1,6 +1,8 @@
 package main
 
-import "math"
+import (
+	"math"
+)
 
 // GetDistance : Return the distance between x1,y1 to x2,y2
 func GetDistance(x1, y1, x2, y2 float64) float64 {
@@ -39,6 +41,7 @@ func XYtoIndex(x, y int) int {
 	}
 
 	return y*Program.WorldX + x
+
 }
 
 // IndexToXY : Convert the index into X,Y for the world space.

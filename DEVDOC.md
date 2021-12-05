@@ -10,8 +10,14 @@ import "neoevo"
 
 - [Constants](<#constants>)
 - [Variables](<#variables>)
+- [func GetAngle(x1, y1, x2, y2 float64) float64](<#func-getangle>)
+- [func GetDistance(x1, y1, x2, y2 float64) float64](<#func-getdistance>)
+- [func XYtoIndex(x, y int) int](<#func-xytoindex>)
 - [func checkgene(gene uint32) bool](<#func-checkgene>)
 - [func clearworld()](<#func-clearworld>)
+- [func forward0(id int) error](<#func-forward0>)
+- [func forward1(id int) error](<#func-forward1>)
+- [func forward2(id int) error](<#func-forward2>)
 - [func gen0init() error](<#func-gen0init>)
 - [func linkneurons(id int) error](<#func-linkneurons>)
 - [func main()](<#func-main>)
@@ -20,16 +26,25 @@ import "neoevo"
 - [func randFloat() float64](<#func-randfloat>)
 - [func randFloatFullValue() float64](<#func-randfloatfullvalue>)
 - [func randInt(max int) int](<#func-randint>)
-- [func step0(id int) error](<#func-step0>)
-- [func step1(id int) error](<#func-step1>)
+- [func runsim() error](<#func-runsim>)
 - [type Neo](<#type-neo>)
 - [type Neuron](<#type-neuron>)
   - [func decode(gene uint32) Neuron](<#func-decode>)
 - [type PData](<#type-pdata>)
 - [type Point](<#type-point>)
+  - [func IndexToXY(i int) Point](<#func-indextoxy>)
 
 
 ## Constants
+
+Math constants
+
+```go
+const (
+    DEG2RAD = 0.0174532925
+    RAD2DEG = 57.2957795130
+)
+```
 
 Inputs
 
@@ -88,6 +103,38 @@ var World []int // World : The world slice
 var WorldTmp []int // WorldTmp : Update to world. Copy back to World when done.
 ```
 
+```go
+var generation int // generation : Current generation of the sim. Needs to be global
+```
+
+```go
+var step int // step : Current step in the current generation. Needs to be global
+```
+
+## func [GetAngle](<https://github.com/misterunix/neoevo/blob/main/location.go#L12>)
+
+```go
+func GetAngle(x1, y1, x2, y2 float64) float64
+```
+
+GetAngle : Return the angle if 0\.0 to 1\.0 from x1\,y1 to x2\,y2
+
+## func [GetDistance](<https://github.com/misterunix/neoevo/blob/main/location.go#L6>)
+
+```go
+func GetDistance(x1, y1, x2, y2 float64) float64
+```
+
+GetDistance : Return the distance between x1\,y1 to x2\,y2
+
+## func [XYtoIndex](<https://github.com/misterunix/neoevo/blob/main/location.go#L25>)
+
+```go
+func XYtoIndex(x, y int) int
+```
+
+Convert X\,Y to index value for positioning in the world space\.
+
 ## func [checkgene](<https://github.com/misterunix/neoevo/blob/main/decode.go#L5>)
 
 ```go
@@ -102,7 +149,31 @@ func clearworld()
 
 clearworld : Set all locations in the world slices to 0
 
-## func [gen0init](<https://github.com/misterunix/neoevo/blob/main/main.go#L98>)
+## func [forward0](<https://github.com/misterunix/neoevo/blob/main/forward.go#L6>)
+
+```go
+func forward0(id int) error
+```
+
+forward0 : Clear inputs\.
+
+## func [forward1](<https://github.com/misterunix/neoevo/blob/main/forward.go#L22>)
+
+```go
+func forward1(id int) error
+```
+
+forward1 : Move env to inputs
+
+## func [forward2](<https://github.com/misterunix/neoevo/blob/main/forward.go#L38>)
+
+```go
+func forward2(id int) error
+```
+
+forward2 : Move inputs into layer 0 neurons
+
+## func [gen0init](<https://github.com/misterunix/neoevo/blob/main/main.go#L100>)
 
 ```go
 func gen0init() error
@@ -162,23 +233,13 @@ func randInt(max int) int
 
 randInt : returns a integer that is between 0 and max\.
 
-## func [step0](<https://github.com/misterunix/neoevo/blob/main/forward.go#L6>)
+## func [runsim](<https://github.com/misterunix/neoevo/blob/main/simulation.go#L5>)
 
 ```go
-func step0(id int) error
+func runsim() error
 ```
 
-step0 : Clear inputs\.
-
-## func [step1](<https://github.com/misterunix/neoevo/blob/main/forward.go#L22>)
-
-```go
-func step1(id int) error
-```
-
-step1 : Move env to inputs\.
-
-## type [Neo](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L58-L71>)
+## type [Neo](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L64-L77>)
 
 Neo : Struct that contains all the information for a Neo\.
 
@@ -199,7 +260,7 @@ type Neo struct {
 }
 ```
 
-## type [Neuron](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L44-L55>)
+## type [Neuron](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L50-L61>)
 
 Neuron : Struct that holds a neurons information\.
 
@@ -224,7 +285,7 @@ type Neuron struct {
 func decode(gene uint32) Neuron
 ```
 
-## type [PData](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L74-L98>)
+## type [PData](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L80-L104>)
 
 PData : Struct for holding most of the programs running data\.
 
@@ -257,7 +318,7 @@ type PData struct {
 var Program PData // Program : Variable expression of PData.
 ```
 
-## type [Point](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L36-L41>)
+## type [Point](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L42-L47>)
 
 Point : Generic struct for holding X\,Y locations\. Storing floats so fewer conversions from int to float will need to be done\.
 
@@ -269,6 +330,14 @@ type Point struct {
     FY  float64 // FY : float64 of the Y location.
 }
 ```
+
+### func [IndexToXY](<https://github.com/misterunix/neoevo/blob/main/location.go#L45>)
+
+```go
+func IndexToXY(i int) Point
+```
+
+IndexToXY : Convert the index into X\,Y for the world space\.
 
 
 
