@@ -35,78 +35,43 @@ Genes are 32 bit Integers stored in each Neo's struct.
 
 ## inputs
 
-- **00 Complete**
-  - age 
-  - age
-- **01 Complete**
-  - direction to closest food 0.0 to 1.0 - 0.0 to 360.0, -1 if no food
-  - clF
-- **02 Complete**
-  - direction to closest Neo 0.0 to 1.0 - 0.0 to 360.0, -1 if no Neo
-  - clN
-- **03 Complete**
-  - Position N to S wall 1.0 to -1.0 - middle is 0 / +1.0 = North -1.0 south
-  - pNS
-- **04 Complete**
-  - Position W to E wall 1.0 to -1.0 - middle is 0 / +1.0 = West -1.0 East
-  - pWE
-- **05 Complete**
-  - distance to closest food 0.0 to 1.0 max distance programmed. 30? -1.0 if to far
-  - dsF
-- **06 Complete**
-  - distance to closest Neo 0.0 to 1.0 max distance programmed. 30? -1.0 if to far
-  - dsN
-- **07 Complete**
-  - Hunger 0.0 to 1.0 set to 100 steps?
-  - Hgr
-- **08 Complete**
-  - distance to blockage forward 0.0 to 1.0 max distance programmed. 30? -1.0 if to far
-  - dFB
-- **09 Complete**
-  - distance to blockage backward 0.0 to 1.0 max distance programmed. 30? -1.0 if to far
-  - dBB
+- **AGE - Done**
+  - Index 0
+  - AGE 
+  - Age of Neo. 0.0 - 1.0
+- DIRCLOSESTFOOD
+  - Index 1  
+  - DCF
+  - Direction to closest food 0.0 to 1.0 - 0.0 to 360.0, -1 if no food.
+- DISTANCEFOOD
+  - Index 2
+  - RCF
+  - Distace to closest food. 0.0 - 1.0, -1 if to far.
+- CLOSESTNEO        = 3  // CLOSESTNEO : Direction to closest Neo 0.0 to 1.0 - 0.0 to 360.0, -1 if no Neo.
+- DISTANCENEO       = 4  // DISTANCENEO : Distance to closest Neo 0.0 to 1.0, -1 if to far.
+- **POSITIONNS - Done**
+  - Index 5
+  - PNS
+  - Position between North and South wall - IE Y -1.0 North 1.0 South.
+- **POSITIONWE - Done**
+  - Index 6
+  - PWE
+  - Position between West and East wall - IE X -1.0 West 1.0 East.
+- DISTANCEFORWARD   = 7  // DISTANCEFORWARD : Distance to nearest blockage forward.
+- DISTANCEBACKWARDS = 8  // DISTANCEBACKWARDS : Distance to nearest blockage backwards.
+- HUNGER            = 9  // HUNGER : Hunger lever. 0.0 - 1.0, 0 not hungry, 1.0 dead.
+- INPUTCOUNT        = 10 // INPUTCOUNT : number of inputs.
 
-
-## Outputs
-
-- 00 
-  - Move in a random direction
-  - mRD
-- 01
-  - Move forward
-  - mFW
-- 02
-  - Move backwards
-  - mBK
-- 03 
-  - Turn Left
-  - tLF
-- 04 
-  - Turn Right
-  - tRT
-- 05
-  - Move North
-  - mNT
-- 06 
-  - Move South
-  - mST
-- 07 
-  - Move West
-  - mWS
-- 08 
-  - Move East
-  - mES
-- 09
-  - Do Nothing
-  - NOP
-- 10 
-  - Move X +-
-  - mX
-- 11
-  - Move Y +-
-  - mY
-
-
+- MOVERANDOM    = 0 // MOVERANDOM : Move in any of the 4 directions.
+- MOVEFORWARD   = 1 // MOVEFORWARD : Move in the forward direction.
+- MOVEBACKWARDS = 2 // MOVEBACKWARDS : Move in the backwards direction - not turning.
+- TURNLEFT      = 3 // Turn 90 degrees counter clockwise.
+- TURNRIGHT     = 4 // Turn 90 degress clockwise.
+- MOVENORTH     = 5 // MOVENORTH : Move y-1
+- MOVESOUTH     = 6 // MOVESOUTH : Move y+1
+- MOVEWEST      = 7 // MOVEWEST : Move x-1
+- MOVEEAST      = 8 // MOVEEAST : Move x+1
+- OUTPUTCOUNT   = 9 // OUTPUTCOUNT : number of outputs  
 
 
 ### Movement rule

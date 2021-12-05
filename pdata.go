@@ -2,6 +2,12 @@ package main
 
 // const, types and globals
 
+// Math constants
+const (
+	DEG2RAD = 0.0174532925
+	RAD2DEG = 57.2957795130
+)
+
 // Inputs
 const (
 	AGE               = 0  // AGE : Age of Neo. 0.0 - 1.0
@@ -103,3 +109,6 @@ var World []int     // World : The world slice
 var WorldTmp []int  // WorldTmp : Update to world. Copy back to World when done.
 var Food []Point    // Food : Food in the world
 var CurrentStep int // CurrentStep : Redundant I think.
+
+var generation int // generation : Current generation of the sim. Needs to be global
+var step int       // step : Current step in the current generation. Needs to be global

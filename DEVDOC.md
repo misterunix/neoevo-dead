@@ -10,43 +10,59 @@ import "neoevo"
 
 - [Constants](<#constants>)
 - [Variables](<#variables>)
-- [func GetAngle(x1, y1, x2, y2 float64) float64](<#func-getangle>)
-- [func GetDistance(x1, y1, x2, y2 float64) float64](<#func-getdistance>)
-- [func PlaceFood()](<#func-placefood>)
-- [func PrintGenes(id int) error](<#func-printgenes>)
-- [func PrintIO(id int) error](<#func-printio>)
-- [func PrintNet(id int) error](<#func-printnet>)
-- [func PrintNeuron(id int) error](<#func-printneuron>)
-- [func PutNeosInWorld() error](<#func-putneosinworld>)
-- [func Step0(i int)](<#func-step0>)
-- [func Step1(i int)](<#func-step1>)
-- [func Step2(i int)](<#func-step2>)
-- [func Step3(i int)](<#func-step3>)
-- [func Step4(i int)](<#func-step4>)
-- [func XYtoIndex(x, y int) int](<#func-xytoindex>)
-- [func buildGenes(id int) error](<#func-buildgenes>)
-- [func createpng(i int)](<#func-createpng>)
-- [func initNeos() error](<#func-initneos>)
+- [func checkgene(gene uint32) bool](<#func-checkgene>)
+- [func clearworld()](<#func-clearworld>)
+- [func gen0init() error](<#func-gen0init>)
+- [func linkneurons(id int) error](<#func-linkneurons>)
 - [func main()](<#func-main>)
-- [func probability(p float64) bool](<#func-probability>)
+- [func printgenes(id int) error](<#func-printgenes>)
+- [func printneuron(id int) error](<#func-printneuron>)
 - [func randFloat() float64](<#func-randfloat>)
 - [func randFloatFullValue() float64](<#func-randfloatfullvalue>)
 - [func randInt(max int) int](<#func-randint>)
+- [func step0(id int) error](<#func-step0>)
+- [func step1(id int) error](<#func-step1>)
 - [type Neo](<#type-neo>)
 - [type Neuron](<#type-neuron>)
-  - [func decode(g int) Neuron](<#func-decode>)
+  - [func decode(gene uint32) Neuron](<#func-decode>)
 - [type PData](<#type-pdata>)
 - [type Point](<#type-point>)
-  - [func DirectionToStep(d int) Point](<#func-directiontostep>)
-  - [func IndexToXY(i int) Point](<#func-indextoxy>)
 
 
 ## Constants
 
+Inputs
+
 ```go
 const (
-    DEG2RAD = 0.0174532925
-    RAD2DEG = 57.2957795130
+    AGE               = 0  // AGE : Age of Neo. 0.0 - 1.0
+    DIRCLOSESTFOOD    = 1  // CLOSESTFOOD : direction to closest food 0.0 to 1.0 - 0.0 to 360.0, -1 if no food.
+    DISTANCEFOOD      = 2  // DISTANCEFOOD : Distace to closest food. 0.0 - 1.0, -1 if to far.
+    CLOSESTNEO        = 3  // CLOSESTNEO : Direction to closest Neo 0.0 to 1.0 - 0.0 to 360.0, -1 if no Neo.
+    DISTANCENEO       = 4  // DISTANCENEO : Distance to closest Neo 0.0 to 1.0, -1 if to far.
+    POSITIONNS        = 5  // Position between North and South wall - IE Y -1.0 North 1.0 South.
+    POSITIONWE        = 6  // Position between West and East wall - IE X -1.0 West 1.0 East.
+    DISTANCEFORWARD   = 7  // DISTANCEFORWARD : Distance to nearest blockage forward.
+    DISTANCEBACKWARDS = 8  // DISTANCEBACKWARDS : Distance to nearest blockage backwards.
+    HUNGER            = 9  // HUNGER : Hunger lever. 0.0 - 1.0, 0 not hungry, 1.0 dead.
+    INPUTCOUNT        = 10 // INPUTCOUNT : number of inputs.
+)
+```
+
+Outputs
+
+```go
+const (
+    MOVERANDOM    = 0 // MOVERANDOM : Move in any of the 4 directions.
+    MOVEFORWARD   = 1 // MOVEFORWARD : Move in the forward direction.
+    MOVEBACKWARDS = 2 // MOVEBACKWARDS : Move in the backwards direction - not turning.
+    TURNLEFT      = 3 // Turn 90 degrees counter clockwise.
+    TURNRIGHT     = 4 // Turn 90 degress clockwise.
+    MOVENORTH     = 5 // MOVENORTH : Move y-1
+    MOVESOUTH     = 6 // MOVESOUTH : Move y+1
+    MOVEWEST      = 7 // MOVEWEST : Move x-1
+    MOVEEAST      = 8 // MOVEEAST : Move x+1
+    OUTPUTCOUNT   = 9 // OUTPUTCOUNT : number of outputs
 )
 ```
 
@@ -61,7 +77,7 @@ var Food []Point // Food : Food in the world
 ```
 
 ```go
-var Neos []Neo // Neos : Slice of the Neos.
+var Neos []Neo // Neos : Slice of the Neos. Neo count starts at 1 !!!!! World will use 0 to be open cell.
 ```
 
 ```go
@@ -72,147 +88,55 @@ var World []int // World : The world slice
 var WorldTmp []int // WorldTmp : Update to world. Copy back to World when done.
 ```
 
-## func [GetAngle](<https://github.com/misterunix/neoevo/blob/main/location.go#L19>)
+## func [checkgene](<https://github.com/misterunix/neoevo/blob/main/decode.go#L5>)
 
 ```go
-func GetAngle(x1, y1, x2, y2 float64) float64
+func checkgene(gene uint32) bool
 ```
 
-GetAngle : Return the angle in degrees from x1\,y1 to x2\,y2
-
-## func [GetDistance](<https://github.com/misterunix/neoevo/blob/main/location.go#L13>)
+## func [clearworld](<https://github.com/misterunix/neoevo/blob/main/housekeeping.go#L4>)
 
 ```go
-func GetDistance(x1, y1, x2, y2 float64) float64
+func clearworld()
 ```
 
-GetDistance : Return the distance between x1\,y1 to x2\,y2
+clearworld : Set all locations in the world slices to 0
 
-## func [PlaceFood](<https://github.com/misterunix/neoevo/blob/main/steps.go#L8>)
+## func [gen0init](<https://github.com/misterunix/neoevo/blob/main/main.go#L98>)
 
 ```go
-func PlaceFood()
+func gen0init() error
 ```
 
-## func [PrintGenes](<https://github.com/misterunix/neoevo/blob/main/printing.go#L8>)
+## func [linkneurons](<https://github.com/misterunix/neoevo/blob/main/decode.go#L84>)
 
 ```go
-func PrintGenes(id int) error
+func linkneurons(id int) error
 ```
 
-PrintGenes : Print the genes of the Neo in hex format
+link the neurns for easier navigation
 
-## func [PrintIO](<https://github.com/misterunix/neoevo/blob/main/printing.go#L26>)
-
-```go
-func PrintIO(id int) error
-```
-
-PrintIO : Prints the Neos Iinput and Output slices\.
-
-## func [PrintNet](<https://github.com/misterunix/neoevo/blob/main/printing.go#L55>)
-
-```go
-func PrintNet(id int) error
-```
-
-PrintNet : Print the Neo's net list\.
-
-## func [PrintNeuron](<https://github.com/misterunix/neoevo/blob/main/printing.go#L43>)
-
-```go
-func PrintNeuron(id int) error
-```
-
-PrintNeuron : Prints the Neos Neurons\. Just a dump of the slice\.
-
-## func [PutNeosInWorld](<https://github.com/misterunix/neoevo/blob/main/main.go#L114>)
-
-```go
-func PutNeosInWorld() error
-```
-
-## func [Step0](<https://github.com/misterunix/neoevo/blob/main/steps.go#L25>)
-
-```go
-func Step0(i int)
-```
-
-Step1 : Fill in all the inputs from the environment\.
-
-## func [Step1](<https://github.com/misterunix/neoevo/blob/main/steps.go#L185>)
-
-```go
-func Step1(i int)
-```
-
-Step1 : Move the Neo's inputs to the neurons\.
-
-## func [Step2](<https://github.com/misterunix/neoevo/blob/main/steps.go#L196>)
-
-```go
-func Step2(i int)
-```
-
-Step2 : Propagate out to in and sum and pass through Tanh\.
-
-## func [Step3](<https://github.com/misterunix/neoevo/blob/main/steps.go#L238>)
-
-```go
-func Step3(i int)
-```
-
-Step3 : Check if Neos died from hunger\.
-
-## func [Step4](<https://github.com/misterunix/neoevo/blob/main/steps.go#L252>)
-
-```go
-func Step4(i int)
-```
-
-Step4 : Do movement
-
-## func [XYtoIndex](<https://github.com/misterunix/neoevo/blob/main/location.go#L31>)
-
-```go
-func XYtoIndex(x, y int) int
-```
-
-Convert X\,Y to index value for positioning in the world space\.
-
-## func [buildGenes](<https://github.com/misterunix/neoevo/blob/main/decode.go#L42>)
-
-```go
-func buildGenes(id int) error
-```
-
-buildGenes :
-
-## func [createpng](<https://github.com/misterunix/neoevo/blob/main/imaging.go#L9>)
-
-```go
-func createpng(i int)
-```
-
-## func [initNeos](<https://github.com/misterunix/neoevo/blob/main/main.go#L142>)
-
-```go
-func initNeos() error
-```
-
-## func [main](<https://github.com/misterunix/neoevo/blob/main/main.go#L12>)
+## func [main](<https://github.com/misterunix/neoevo/blob/main/main.go#L14>)
 
 ```go
 func main()
 ```
 
-## func [probability](<https://github.com/misterunix/neoevo/blob/main/steps.go#L263>)
+## func [printgenes](<https://github.com/misterunix/neoevo/blob/main/printing.go#L6>)
 
 ```go
-func probability(p float64) bool
+func printgenes(id int) error
 ```
 
-probability : return true if random is less than p\.
+printgenes : Display the genes in 8 digit hex format
+
+## func [printneuron](<https://github.com/misterunix/neoevo/blob/main/printing.go#L24>)
+
+```go
+func printneuron(id int) error
+```
+
+printneuron : Prints the Neos Neurons\. Just a dump of the slice\.
 
 ## func [randFloat](<https://github.com/misterunix/neoevo/blob/main/rnd.go#L11>)
 
@@ -238,7 +162,23 @@ func randInt(max int) int
 
 randInt : returns a integer that is between 0 and max\.
 
-## type [Neo](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L38-L52>)
+## func [step0](<https://github.com/misterunix/neoevo/blob/main/forward.go#L6>)
+
+```go
+func step0(id int) error
+```
+
+step0 : Clear inputs\.
+
+## func [step1](<https://github.com/misterunix/neoevo/blob/main/forward.go#L22>)
+
+```go
+func step1(id int) error
+```
+
+step1 : Move env to inputs\.
+
+## type [Neo](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L58-L71>)
 
 Neo : Struct that contains all the information for a Neo\.
 
@@ -246,9 +186,8 @@ Neo : Struct that contains all the information for a Neo\.
 type Neo struct {
     ID        int       // ID : Not currently used.
     Age       float64   // Age : Float value of the Neo's age. 0 - 1.0
-    X         int       // X : Current X location of the Neo
-    Y         int       // Y: Current Y location of the Neo
-    Genes     []int     // Genes : Slice of ints holding the Genome.
+    Location  Point     // Location : Point of X,Y of Neo's location in the world.
+    Genes     []uint32  // Genes : Slice of ints holding the Genome.
     Neurons   []Neuron  // Neurons : Slive of the Neurons for the Neos.
     Inputs    []float64 // Inputs : Slice of the enviroment inputs.
     Outputs   []float64 // Outputs : Slice of the output neorons.
@@ -260,53 +199,57 @@ type Neo struct {
 }
 ```
 
-## type [Neuron](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L27-L35>)
+## type [Neuron](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L44-L55>)
 
 Neuron : Struct that holds a neurons information\.
 
 ```go
 type Neuron struct {
-    InValue     float64 // InValue : The neuron's In value
-    OutValue    float64 // OutValue : The neurons Out value that has been passed through Tanh
-    Weight      float64 // Weight : The neuron's weighted value.
-    SourceLayer int     // SourceLayer : The neuron's source layer.
-    Source      int     // Source : The neuron's Source ID
-    OutLayer    int     // OutLayer : The neuron's output layer
-    Out         int     // Out : // The neuron's Out ID
+    ID           int     // ID : ID of the neuron.
+    InValue      float64 // InValue : The neuron's In value
+    OutValue     float64 // OutValue : The neurons Out value that has been passed through Tanh
+    Weight       float64 // Weight : The neuron's weighted value.
+    SourceLayer  int     // SourceLayer : The neuron's source layer.
+    SourceID     int     // SourceID : The neuron's Source ID
+    OutLayer     int     // OutLayer : The neuron's output layer
+    OutID        int     // OutID : // The neuron's Out ID
+    LinkForward  int     // LinkForward : Neuron to forward reference
+    LinkBackward int     // LinkBackward : Neuron to backdirection
 }
 ```
 
-### func [decode](<https://github.com/misterunix/neoevo/blob/main/decode.go#L6>)
+### func [decode](<https://github.com/misterunix/neoevo/blob/main/decode.go#L48>)
 
 ```go
-func decode(g int) Neuron
+func decode(gene uint32) Neuron
 ```
 
-decode :
-
-## type [PData](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L6-L24>)
+## type [PData](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L74-L98>)
 
 PData : Struct for holding most of the programs running data\.
 
 ```go
 type PData struct {
-    NumberOfNeos    int // NumberOfNeos : Number of Neos per generation.
-    NumberOfGenes   int // NumberOfGenes : Number of genes in a Neo
-    NumberOfLayers  int // NumberOfLayers : Number of layers where 0 is input, MaxLayers-1 is output. Inbetween are hidden.
-    NumberOfNeurons int // NumberOfNeurons : Number of Neurons per layer
-    NumberOfSteps   int // NumberOfSteps : Number of steps in this generation.
+    NumberOfNeos        int // NumberOfNeos : Number of Neos per generation.
+    NumberOfGenes       int // NumberOfGenes : Number of genes in a Neo
+    NumberOfLayers      int // NumberOfLayers : Number of layers where 0 is input, MaxLayers-1 is output. Inbetween are hidden.
+    NumberOfNeurons     int // NumberOfNeurons : Number of Neurons per hidden layer
+    NumberOfSteps       int // NumberOfSteps : Number of steps in this generation.
+    NumberOfGenerations int // NumberOfGenerations : Number of generations per simulation.
 
-    WorldSize int // WorldSize : Total number of cells making up the world.
-    WorldX    int // WorldX : Number of cells in the X plane.
-    WorldY    int // WorldY : Number of cells in the Y plane.
+    WorldSize int     // WorldSize : Total number of cells making up the world.
+    WorldX    int     // WorldX : Number of cells in the X plane.
+    WorldY    int     // WorldY : Number of cells in the Y plane.
+    FworldX   float64 // FworldX : Float version of WorldX. Storing floats so less conversions will be needed.
+    FworldY   float64 // FworldY : Float version of WorldY. Sroting floats so less conversions will be needed.
 
-    NumberOfInputs  int // NumberOfInputs : The number of Input nodes. Must be equal to the NumberOfNeurons or less.
-    NumberOfOutputs int // NumberOfOutputs : The number of Output nodes. Must be equal to the NumberOfNeurons or less.
-
-    MaxHunger       int // MaxHunger : Starting hunger
-    MaxDistanceLook int // MaxDistanceLook : How far the Nenos can see
+    MaxHunger    int     // MaxHunger : Starting hunger
+    MaxDistLook  int     // MaxDistLook : How far the Nenos can see
+    FMaxDistLook float64 // FMaxDistLook : Float of MaxDistLook so less conversions needed.
 
     FoodCount int // FoodCount : Number of food items in the world.
+
+    Mutaions float64 // Mutations : Frequecy of mutations. 0.0 to 1.0. 0 - no mutations. 1 - Mutation every generation.
 }
 ```
 
@@ -314,32 +257,18 @@ type PData struct {
 var Program PData // Program : Variable expression of PData.
 ```
 
-## type [Point](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L55-L58>)
+## type [Point](<https://github.com/misterunix/neoevo/blob/main/pdata.go#L36-L41>)
 
-Point : Generic struct for holding X\,Y locations\.
+Point : Generic struct for holding X\,Y locations\. Storing floats so fewer conversions from int to float will need to be done\.
 
 ```go
 type Point struct {
-    X   int // X : X location.
-    Y   int // Y : Y location.
+    X   int     // X : X location.
+    Y   int     // Y : Y location.
+    FX  float64 // FX : float64 of the X location.
+    FY  float64 // FY : float64 of the Y location.
 }
 ```
-
-### func [DirectionToStep](<https://github.com/misterunix/neoevo/blob/main/location.go#L45>)
-
-```go
-func DirectionToStep(d int) Point
-```
-
-DirectionToStep : Convert direction to x\,y stepping
-
-### func [IndexToXY](<https://github.com/misterunix/neoevo/blob/main/location.go#L36>)
-
-```go
-func IndexToXY(i int) Point
-```
-
-IndexToXY : Convert the index into X\,Y for the world space\.
 
 
 

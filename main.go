@@ -91,6 +91,8 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	runsim()
+
 	fmt.Printf("Simulation run time: %v\n", time.Since(startsim))
 
 }
