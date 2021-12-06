@@ -55,6 +55,7 @@ type Point struct {
 	FY float64 // FY : float64 of the Y location.
 }
 
+/*
 // Neuron : Struct that holds a neurons information.
 type Neuron struct {
 	ID           int     // ID : ID of the neuron.
@@ -87,6 +88,18 @@ type Neo struct {
 	Dead       bool      // Dead : True dead. False alive
 }
 
+
+var Neos []Neo      // Neos : Slice of the Neos. Neo count starts at 1 !!!!! World will use 0 to be open cell.
+var World []int     // World : The world slice
+var WorldTmp []int  // WorldTmp : Update to world. Copy back to World when done.
+var Food []Point    // Food : Food in the world
+var CurrentStep int // CurrentStep : Redundant I think.
+
+var generation int // generation : Current generation of the sim. Needs to be global
+var step int       // step : Current step in the current generation. Needs to be global
+
+*/
+
 // PData : Struct for holding most of the programs running data.
 type PData struct {
 	NumberOfNeos        int // NumberOfNeos : Number of Neos per generation.
@@ -114,12 +127,28 @@ type PData struct {
 	Mutaions float64 // Mutations : Frequecy of mutations. 0.0 to 1.0. 0 - no mutations. 1 - Mutation every generation.
 }
 
-var Program PData   // Program : Variable expression of PData.
-var Neos []Neo      // Neos : Slice of the Neos. Neo count starts at 1 !!!!! World will use 0 to be open cell.
-var World []int     // World : The world slice
-var WorldTmp []int  // WorldTmp : Update to world. Copy back to World when done.
-var Food []Point    // Food : Food in the world
-var CurrentStep int // CurrentStep : Redundant I think.
+var Program PData // Program : Variable expression of PData.
 
-var generation int // generation : Current generation of the sim. Needs to be global
-var step int       // step : Current step in the current generation. Needs to be global
+type InputWeight struct {
+	Input  float64
+	Weight float64
+}
+
+type Perceptron struct {
+	Input   []float64
+	Weights []float64
+	Bias    float64
+	Output  float64
+}
+
+type Genome struct {
+	Storage uint64
+}
+
+type Layers struct {
+}
+
+type Neo struct {
+	Gene   []Genome
+	Neuron []Perceptron
+}
