@@ -2,144 +2,73 @@ package main
 
 import "fmt"
 
-func checkgene(gene uint32) bool {
+/*????|PPER|TTAA|QQQQ
 
-	//fmt.Printf("checkgene %08X\n", gene)
+E Destination Layer 0-F
+R Source Layer 0-F
+TT Destination ID 00-FF
+AA Source ID 00-FF
+QQQQ Weight 65535 : (X / 65535)*8-4 : -4.0 to +4.0*/
 
-	var src, dst uint32
-	var srcl, dstl uint32
+func decode(gene uint64) Neuron {
 
-	srcl = ((gene & 0xE0000000) >> 29) % uint32(Program.NumberOfLayers)
-	dstl = ((gene & 0x00E00000) >> 21) % uint32(Program.NumberOfLayers)
+	n := Neuron{}
 
-	// dst layer can not be layer 0
-	if dstl == 0 {
+	weighti := gene & 0x000000000000FFFF
+	weightf := ((float64(weighti) / 65535.0) * 8) - 4
+
+	src := (gene & 0x0000000000FF0000) >> 16
+	dst := (gene & 0x00000000FF000000) >> 24
+	srclayer := (gene & 0x0000000F00000000) >> 28
+	dstlayer := (gene & 0x000000F000000000) >> 32
+
+	n.Weight = weightf
+	n.Weighti = int(weighti)
+	n.SourceID = int(src)
+	n.SourceLayer = int(srclayer)
+	n.OutID = int(dst)
+	n.OutLayer = int(dstlayer)
+
+	return n
+}
+
+func genecheck(gene uint64) bool {
+
+	//weighti := gene & 0x000000000000FFFF
+	//weightf := ((float64(weighti) / 65535.0) * 8) - 4
+
+	src := (gene & 0x0000000000FF0000) >> 16
+	dst := (gene & 0x00000000FF000000) >> 24
+	srclayer := (gene & 0x0000000F00000000) >> 28
+	dstlayer := (gene & 0x000000F000000000) >> 32
+
+	if dstlayer == 0 {
 		return false
 	}
 
-	// src layer can not be the output layer
-	if srcl == uint32(Program.NumberOfLayers-1) {
+	if srclayer == uint64(Program.NumberOfLayers-1) {
 		return false
 	}
 
-	// src layer cannot be more than dst layer (cant go backwards - at least for now.
-	if srcl > dstl {
+	if srclayer == dstlayer && src == dst {
 		return false
 	}
 
-	//fmt.Printf("srcl:%02d dstl:%02d\n", srcl, dstl)
-
-	if srcl == 0 {
-		src = ((gene & 0x1F000000) >> 24) % INPUTCOUNT
-	} else {
-		src = ((gene & 0x1F000000) >> 24) % uint32(Program.NumberOfNeurons)
-	}
-
-	if dstl == uint32(Program.NumberOfLayers-1) {
-		dst = ((gene & 0x001F0000) >> 16) % OUTPUTCOUNT
-	} else {
-		dst = ((gene & 0x001F0000) >> 16) % uint32(Program.NumberOfNeurons)
-	}
-
-	// no loops on same neuron
-	if srcl != uint32(Program.NumberOfLayers)-1 {
-		if srcl == dstl && src == dst {
-			return false
-		}
-	}
-	//fmt.Printf("srcl:%02d src:%02d dstl:%02d dst:%02d\n", srcl, src, dstl, dst)
 	return true
 }
 
-func decode(gene uint32) Neuron {
-
-	neu := Neuron{}
-
-	weightI := (gene & 0x0000FFFF)               // weightI : unsigned integer value of the weight
-	weight := (float64(weightI)/65535.0)*8 - 4.0 // weight : neurons weight -4.0 to +4.0
-
-	var src, dst uint32
-	var srcl, dstl uint32
-
-	srcl = ((gene & 0xE0000000) >> 29) % uint32(Program.NumberOfLayers)
-	dstl = ((gene & 0x00E00000) >> 21) % uint32(Program.NumberOfLayers)
-
-	if srcl == 0 {
-		src = ((gene & 0x1F000000) >> 24) % INPUTCOUNT
-	} else {
-		src = ((gene & 0x1F000000) >> 24) % uint32(Program.NumberOfNeurons)
-	}
-
-	if dstl == uint32(Program.NumberOfLayers-1) {
-		dst = ((gene & 0x001F0000) >> 16) % OUTPUTCOUNT
-	} else {
-		dst = ((gene & 0x001F0000) >> 16) % uint32(Program.NumberOfNeurons)
-	}
-
-	/*
-		srcl = ((gene & 0xE0000000) >> 29) % uint32(Program.NumberOfLayers)
-		dstl = ((gene & 0x00E00000) >> 21) % uint32(Program.NumberOfLayers)
-
-		if srcl == 0 {
-			src = ((gene & 0x1F000000) >> 24) % INPUTCOUNT
-		} else {
-			src = ((gene & 0x1F000000) >> 24) % uint32(Program.NumberOfNeurons)
-			//fmt.Printf("--src--- %d %d %d -----\n", srcl, src, Program.NumberOfNeurons)
-		}
-
-		if dstl == uint32(Program.NumberOfLayers-1) {
-			dst = ((gene & 0x001F0000) >> 16) % OUTPUTCOUNT
-		} else {
-			dst = ((gene & 0x001F0000) >> 16) % uint32(Program.NumberOfNeurons)
-			//fmt.Printf("--dst--- %d %d %d-----\n", dstl, dst, Program.NumberOfNeurons)
-		}
-	*/
-	//	fmt.Printf("srcl:%02d src:%02d dstl:%02d dst:%02d\n", srcl, src, dstl, dst)
-	neu.Weight = weight
-	neu.SourceID = int(src)
-	neu.SourceLayer = int(srcl)
-	neu.OutID = int(dst)
-	neu.OutLayer = int(dstl)
-
-	return neu
-}
-
-// link the neurns for easier navigation
 func linkneurons(id int) error {
 
-	if id < 1 || id > Program.NumberOfNeos {
-		return fmt.Errorf("linkneurons id `%d` out of bounds", id)
+	if id > Program.NumberOfNeos || id < 1 {
+		return fmt.Errorf("PrintIO id '%d' is out of bounds", id)
 	}
 
-	for i, n := range Neos[id].Neurons {
+	for layer := 0; layer < Program.NumberOfLayers; layer++ {
 
-		/*
-			if n.OutLayer == Program.NumberOfLayers-1 {
-				Neos[id].Neurons[i].LinkForward = -99
-				continue
-			}
-		*/
-		for j, k := range Neos[id].Neurons {
-
-			// Cant do itself. :)
-			if i == j {
-				continue
-			}
-
-			if n.OutLayer == k.SourceLayer && n.OutID == k.SourceID {
-
-				Neos[id].Neurons[i].LinkForward = j
-				//fmt.Println("Link", id, i, j)
-				break
-
-			} else {
-				Neos[id].Neurons[i].LinkForward = -1
-			}
+		for i, neo := range Neos[id].Neurons {
 
 		}
 
 	}
-
-	return nil
 
 }

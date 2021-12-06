@@ -10,31 +10,40 @@ const (
 
 // Inputs
 const (
-	AGE               = 0  // AGE : Age of Neo. 0.0 - 1.0
-	DIRCLOSESTFOOD    = 1  // CLOSESTFOOD : direction to closest food 0.0 to 1.0 - 0.0 to 360.0, -1 if no food.
-	DISTANCEFOOD      = 2  // DISTANCEFOOD : Distace to closest food. 0.0 - 1.0, -1 if to far.
-	CLOSESTNEO        = 3  // CLOSESTNEO : Direction to closest Neo 0.0 to 1.0 - 0.0 to 360.0, -1 if no Neo.
-	DISTANCENEO       = 4  // DISTANCENEO : Distance to closest Neo 0.0 to 1.0, -1 if to far.
-	POSITIONNS        = 5  // Position between North and South wall - IE Y -1.0 North 1.0 South.
-	POSITIONWE        = 6  // Position between West and East wall - IE X -1.0 West 1.0 East.
-	DISTANCEFORWARD   = 7  // DISTANCEFORWARD : Distance to nearest blockage forward.
-	DISTANCEBACKWARDS = 8  // DISTANCEBACKWARDS : Distance to nearest blockage backwards.
-	HUNGER            = 9  // HUNGER : Hunger lever. 0.0 - 1.0, 0 not hungry, 1.0 dead.
-	INPUTCOUNT        = 10 // INPUTCOUNT : number of inputs.
+	AGE         = 0 // AGE : Age of Neo. 0.0 - 1.0
+	POSITIONNS  = 1 // Position between North and South wall - IE Y -1.0 North 1.0 South.
+	POSITIONWE  = 2 // Position between West and East wall - IE X -1.0 West 1.0 East.
+	CLOSESTNEO  = 3 // CLOSESTNEO : Direction to closest Neo 0.0 to 1.0 - 0.0 to 360.0, -1 if no Neo.
+	DISTANCENEO = 4 // DISTANCENEO : Distance to closest Neo 0.0 to 1.0, -1 if to far.
+	INPUTCOUNT  = 5 // INPUTCOUNT : number of inputs.
+
+	/*
+		DIRCLOSESTFOOD    = 1  // CLOSESTFOOD : direction to closest food 0.0 to 1.0 - 0.0 to 360.0, -1 if no food.
+		DISTANCEFOOD      = 2  // DISTANCEFOOD : Distace to closest food. 0.0 - 1.0, -1 if to far.
+		POSITIONNS        = 5  // Position between North and South wall - IE Y -1.0 North 1.0 South.
+		POSITIONWE        = 6  // Position between West and East wall - IE X -1.0 West 1.0 East.
+		DISTANCEFORWARD   = 7  // DISTANCEFORWARD : Distance to nearest blockage forward.
+		DISTANCEBACKWARDS = 8  // DISTANCEBACKWARDS : Distance to nearest blockage backwards.
+		HUNGER            = 9  // HUNGER : Hunger lever. 0.0 - 1.0, 0 not hungry, 1.0 dead.
+		INPUTCOUNT        = 10 // INPUTCOUNT : number of inputs.
+	*/
 )
 
 // Outputs
 const (
-	MOVERANDOM    = 0 // MOVERANDOM : Move in any of the 4 directions.
-	MOVEFORWARD   = 1 // MOVEFORWARD : Move in the forward direction.
-	MOVEBACKWARDS = 2 // MOVEBACKWARDS : Move in the backwards direction - not turning.
-	TURNLEFT      = 3 // Turn 90 degrees counter clockwise.
-	TURNRIGHT     = 4 // Turn 90 degress clockwise.
-	MOVENORTH     = 5 // MOVENORTH : Move y-1
-	MOVESOUTH     = 6 // MOVESOUTH : Move y+1
-	MOVEWEST      = 7 // MOVEWEST : Move x-1
-	MOVEEAST      = 8 // MOVEEAST : Move x+1
-	OUTPUTCOUNT   = 9 // OUTPUTCOUNT : number of outputs
+	MOVENORTH   = 0 // MOVENORTH : Move y-1
+	MOVESOUTH   = 1 // MOVESOUTH : Move y+1
+	MOVEWEST    = 2 // MOVEWEST : Move x-1
+	MOVEEAST    = 3 // MOVEEAST : Move x+1
+	OUTPUTCOUNT = 4 // OUTPUTCOUNT : number of outputs
+
+	/*
+		MOVERANDOM    = 0 // MOVERANDOM : Move in any of the 4 directions.
+		MOVEFORWARD   = 1 // MOVEFORWARD : Move in the forward direction.
+		MOVEBACKWARDS = 2 // MOVEBACKWARDS : Move in the backwards direction - not turning.
+		TURNLEFT      = 3 // Turn 90 degrees counter clockwise.
+		TURNRIGHT     = 4 // Turn 90 degress clockwise.
+	*/
 )
 
 // Point : Generic struct for holding X,Y locations.
@@ -52,12 +61,13 @@ type Neuron struct {
 	InValue      float64 // InValue : The neuron's In value
 	OutValue     float64 // OutValue : The neurons Out value that has been passed through Tanh
 	Weight       float64 // Weight : The neuron's weighted value.
-	SourceLayer  int     // SourceLayer : The neuron's source layer.
-	SourceID     int     // SourceID : The neuron's Source ID
-	OutLayer     int     // OutLayer : The neuron's output layer
-	OutID        int     // OutID : // The neuron's Out ID
-	LinkForward  int     // LinkForward : Neuron to forward reference
-	LinkBackward int     // LinkBackward : Neuron to backdirection
+	Weighti      int
+	SourceLayer  int // SourceLayer : The neuron's source layer.
+	SourceID     int // SourceID : The neuron's Source ID
+	OutLayer     int // OutLayer : The neuron's output layer
+	OutID        int // OutID : // The neuron's Out ID
+	LinkForward  int // LinkForward : Neuron to forward reference
+	LinkBackward int // LinkBackward : Neuron to backdirection
 }
 
 // Neo : Struct that contains all the information for a Neo.

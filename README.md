@@ -10,73 +10,25 @@ I didn't want to copy his code but I did use his comments as an imperation. The 
 **So at the moment there is nothing to see**.
 
 
-
 ## Documentaion
 gomarkdoc -u > DEVDOC.md
 
 ## Gene Decode
 
-~~PP UU TT AA QQQQ~~
-~~UU Out Neuron~~
-~~TT In layer~~
-~~AA In Neuron~~
-~~QQQQ Weight 65535 : (X / 65535)*8-4 : -4.0 to +4.0~~
+????|PPER|TTAA|QQQQ
 
+E Destination Layer 0-F
+R Source Layer 0-F
+TT Destination ID 00-FF
+AA Source ID 00-FF
+QQQQ Weight 65535 : (X / 65535)*8-4 : -4.0 to +4.0
 
-Genes are 32 bit Integers stored in each Neo's struct. 
-  - bits 
-    - 0 - 15 Weight on input
-    - 16 - 22 Output index
-    - 23
-      - 0 hidden
-      - 1 output
-    - 24-30 Input index
-    - 31 
-      - 0 input
-      - 1 hidden
 
 
 
 
 ## inputs
 
-- **AGE - Done**
-  - Index 0
-  - AGE 
-  - Age of Neo. 0.0 - 1.0
-- DIRCLOSESTFOOD
-  - Index 1  
-  - DCF
-  - Direction to closest food 0.0 to 1.0 - 0.0 to 360.0, -1 if no food.
-- DISTANCEFOOD
-  - Index 2
-  - RCF
-  - Distace to closest food. 0.0 - 1.0, -1 if to far.
-- CLOSESTNEO        = 3  // CLOSESTNEO : Direction to closest Neo 0.0 to 1.0 - 0.0 to 360.0, -1 if no Neo.
-- DISTANCENEO       = 4  // DISTANCENEO : Distance to closest Neo 0.0 to 1.0, -1 if to far.
-- **POSITIONNS - Done**
-  - Index 5
-  - PNS
-  - Position between North and South wall - IE Y -1.0 North 1.0 South.
-- **POSITIONWE - Done**
-  - Index 6
-  - PWE
-  - Position between West and East wall - IE X -1.0 West 1.0 East.
-- DISTANCEFORWARD   = 7  // DISTANCEFORWARD : Distance to nearest blockage forward.
-- DISTANCEBACKWARDS = 8  // DISTANCEBACKWARDS : Distance to nearest blockage backwards.
-- HUNGER            = 9  // HUNGER : Hunger lever. 0.0 - 1.0, 0 not hungry, 1.0 dead.
-- INPUTCOUNT        = 10 // INPUTCOUNT : number of inputs.
-
-- MOVERANDOM    = 0 // MOVERANDOM : Move in any of the 4 directions.
-- MOVEFORWARD   = 1 // MOVEFORWARD : Move in the forward direction.
-- MOVEBACKWARDS = 2 // MOVEBACKWARDS : Move in the backwards direction - not turning.
-- TURNLEFT      = 3 // Turn 90 degrees counter clockwise.
-- TURNRIGHT     = 4 // Turn 90 degress clockwise.
-- MOVENORTH     = 5 // MOVENORTH : Move y-1
-- MOVESOUTH     = 6 // MOVESOUTH : Move y+1
-- MOVEWEST      = 7 // MOVEWEST : Move x-1
-- MOVEEAST      = 8 // MOVEEAST : Move x+1
-- OUTPUTCOUNT   = 9 // OUTPUTCOUNT : number of outputs  
 
 
 ### Movement rule
