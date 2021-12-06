@@ -73,7 +73,7 @@ func main() {
 	Neos = make([]Neo, Program.NumberOfNeos)
 	for i := 1; i < Program.NumberOfNeos; i++ {
 		//Neos[i].Neurons = make([]Neuron, Program.NumberOfNeurons)
-		Neos[i].Genes = make([]uint32, Program.NumberOfGenes)
+		Neos[i].Genes = make([]uint64, Program.NumberOfGenes)
 	}
 
 	startsim := time.Now() // Get the current time. Used for timming the execution of the sim.
@@ -107,10 +107,10 @@ func gen0init() error {
 		var nid int // nid : Neuron ID
 		for j := 0; j < Program.NumberOfGenes; j++ {
 
-			var tempgene uint32
+			var tempgene uint64
 			for {
-				tempgene = uint32(randInt(0xFFFFFFFF))
-				if checkgene(tempgene) {
+				tempgene = uint64(randUInt(0xFFFFFFFFFFFFFFFF))
+				if genecheck(tempgene) {
 					break
 				}
 			}

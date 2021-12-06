@@ -1,10 +1,7 @@
 package main
 
 import (
-	"log"
-	"math/big"
-
-	"crypto/rand"
+	"math/rand"
 )
 
 /*
@@ -35,10 +32,33 @@ func randFloatFullValue() float64 {
 
 // randInt : returns a integer that is between 0 and max.
 func randInt(max int) int {
-	t := int64(max)
-	nBig, err := rand.Int(rand.Reader, big.NewInt(t))
-	if err != nil {
-		log.Println(err)
-	}
-	return int(nBig.Int64())
+	return rand.Int() % max
+	/*
+		t := int64(max)
+		nBig, err := rand.Int(rand.Reader, big.NewInt(t))
+		if err != nil {
+			log.Println(err)
+		}
+		return int(nBig.Int64())
+	*/
+
+}
+
+// randInt : returns a integer that is between 0 and max.
+func randUInt(max uint64) uint64 {
+
+	return rand.Uint64()
+
+	//	return uint64(rand.Uint32())<<32 + uint64(rand.Uint32())
+
+	/*
+		t := uint64(max)
+		nBig, err := rand.Int(rand.Reader, big.NewInt(t))
+		if err != nil {
+			log.Println(err)
+		}
+		return uint64(nBig.Uint64())
+
+	*/
+
 }

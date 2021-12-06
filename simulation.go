@@ -44,15 +44,17 @@ func runsim() error {
 			for id := 1; id < Program.NumberOfNeos; id++ {
 				forward1(id)
 			}
-			for id := 1; id < Program.NumberOfNeos; id++ {
-				forward2(id)
-			}
-			for id := 1; id < Program.NumberOfNeos; id++ {
-				forward3(id)
-			}
-			for id := 1; id < Program.NumberOfNeos; id++ {
-				forward4(id)
-			}
+			/*
+				for id := 1; id < Program.NumberOfNeos; id++ {
+					forward2(id)
+				}
+				for id := 1; id < Program.NumberOfNeos; id++ {
+					forward3(id)
+				}
+				for id := 1; id < Program.NumberOfNeos; id++ {
+					forward4(id)
+				}
+			*/
 			/*
 
 				p0 := parallel.NewParallel()

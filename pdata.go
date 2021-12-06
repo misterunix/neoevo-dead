@@ -75,8 +75,8 @@ type Neo struct {
 	ID         int       // ID : Not currently used.
 	Age        float64   // Age : Float value of the Neo's age. 0 - 1.0
 	Location   Point     // Location : Point of X,Y of Neo's location in the world.
-	Genes      []uint32  // Genes : Slice of ints holding the Genome.
-	SimpleGene []uint32  // SimpleGene : Simplified version of the genome.
+	Genes      []uint64  // Genes : Slice of ints holding the Genome.
+	SimpleGene []uint64  // SimpleGene : Simplified version of the genome.
 	Neurons    []Neuron  // Neurons : Slive of the Neurons for the Neos.
 	Inputs     []float64 // Inputs : Slice of the enviroment inputs.
 	Outputs    []float64 // Outputs : Slice of the output neorons.

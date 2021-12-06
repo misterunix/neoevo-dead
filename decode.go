@@ -16,11 +16,18 @@ func decode(gene uint64) Neuron {
 
 	weighti := gene & 0x000000000000FFFF
 	weightf := ((float64(weighti) / 65535.0) * 8) - 4
-
+	srclayer := ((gene & 0x0000000F00000000) >> 28) % uint64(Program.NumberOfLayers)
+	dstlayer := ((gene & 0x000000F000000000) >> 32) % uint64(Program.NumberOfLayers)
 	src := (gene & 0x0000000000FF0000) >> 16
 	dst := (gene & 0x00000000FF000000) >> 24
-	srclayer := (gene & 0x0000000F00000000) >> 28
-	dstlayer := (gene & 0x000000F000000000) >> 32
+	//srclayer := (gene & 0x0000000F00000000) >> 28
+	//dstlayer := (gene & 0x000000F000000000) >> 32
+
+	// dont need dst when the src layer is the last layer
+	if srclayer == uint64(Program.NumberOfLayers-1) {
+		dstlayer = srclayer
+		dst = src
+	}
 
 	n.Weight = weightf
 	n.Weighti = int(weighti)
@@ -39,15 +46,15 @@ func genecheck(gene uint64) bool {
 
 	src := (gene & 0x0000000000FF0000) >> 16
 	dst := (gene & 0x00000000FF000000) >> 24
-	srclayer := (gene & 0x0000000F00000000) >> 28
-	dstlayer := (gene & 0x000000F000000000) >> 32
+	srclayer := ((gene & 0x0000000F00000000) >> 28) % uint64(Program.NumberOfLayers)
+	dstlayer := ((gene & 0x000000F000000000) >> 32) % uint64(Program.NumberOfLayers)
 
 	if dstlayer == 0 {
 		return false
 	}
 
 	if srclayer == uint64(Program.NumberOfLayers-1) {
-		return false
+		return true
 	}
 
 	if srclayer == dstlayer && src == dst {
@@ -67,8 +74,26 @@ func linkneurons(id int) error {
 
 		for i, neo := range Neos[id].Neurons {
 
+			if neo.SourceLayer != layer {
+				continue
+			}
+
+			for j, ne := range Neos[id].Neurons {
+
+				if j == i {
+					continue
+				}
+
+				if neo.OutLayer == ne.SourceLayer && neo.OutID == ne.SourceID {
+					Neos[id].Neurons[i].LinkForward = j
+				}
+
+			}
+
 		}
 
 	}
+
+	return nil
 
 }
